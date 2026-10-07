@@ -1,0 +1,438 @@
+.assinatura-card {
+  --status: var(--primary);
+  --status-soft: var(--primary-soft);
+  --status-gradient: var(--gradient-primary);
+
+  position: relative;
+  display: grid;
+  gap: 18px;
+  align-content: start;
+  width: 100%;
+  max-width: 460px;
+  padding: 24px;
+  overflow: hidden;
+  animation: fadeInUp 0.6s var(--ease) backwards;
+  transition:
+    transform 0.3s var(--ease),
+    box-shadow 0.3s var(--ease),
+    border-color 0.3s var(--ease),
+    background-color 0.35s var(--ease);
+}
+
+.assinatura-card[data-status='trial'] {
+  --status: var(--info);
+  --status-soft: var(--info-soft);
+  --status-gradient: linear-gradient(90deg, light-dark(#1d4ed8, #3b82f6), light-dark(#0e7490, #22d3ee), light-dark(#1d4ed8, #3b82f6));
+}
+
+.assinatura-card[data-status='pendente'] {
+  --status: var(--warning);
+  --status-soft: var(--warning-soft);
+  --status-gradient: linear-gradient(90deg, light-dark(#b45309, #f59e0b), light-dark(#c2410c, #fbbf24), light-dark(#b45309, #f59e0b));
+}
+
+.assinatura-card[data-status='ativa'] {
+  --status: var(--success);
+  --status-soft: var(--success-soft);
+  --status-gradient: linear-gradient(90deg, light-dark(#15803d, #22c55e), light-dark(#0f766e, #2dd4bf), light-dark(#15803d, #22c55e));
+}
+
+.assinatura-card[data-status='inadimplente'] {
+  --status: var(--danger);
+  --status-soft: var(--danger-soft);
+  --status-gradient: linear-gradient(90deg, light-dark(#b91c1c, #ef4444), light-dark(#be185d, #f472b6), light-dark(#b91c1c, #ef4444));
+}
+
+.assinatura-card[data-status='cancelada'],
+.assinatura-card[data-status='expirada'] {
+  --status: var(--text-muted);
+  --status-soft: var(--surface-2);
+  --status-gradient: linear-gradient(90deg, var(--border-strong), var(--text-subtle), var(--border-strong));
+}
+
+.assinatura-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--status-gradient);
+  background-size: 200% 100%;
+  animation: barraFluxo 6s linear infinite;
+}
+
+.assinatura-card:hover {
+  border-color: color-mix(in srgb, var(--status) 35%, transparent);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+}
+
+@keyframes barraFluxo {
+  to { background-position: -200% 0; }
+}
+
+.assinatura-card__head {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.assinatura-card__icon,
+.assinatura-card__icon-skeleton {
+  flex: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+}
+
+.assinatura-card__icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  color: var(--status);
+  background: var(--status-soft);
+  border: 1px solid color-mix(in srgb, var(--status) 30%, transparent);
+  animation: floatSm 5s ease-in-out infinite;
+}
+
+.assinatura-card__icon::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border: 2px solid var(--status);
+  border-radius: inherit;
+  animation: pulseRing 2.8s ease-out infinite;
+}
+
+.assinatura-card__icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.assinatura-card__titulos {
+  display: grid;
+  flex: 1;
+  gap: 6px;
+  justify-items: start;
+  min-width: 0;
+}
+
+.assinatura-card__titulo {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.assinatura-card__plano {
+  display: grid;
+  gap: 2px;
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.assinatura-card__plano-rotulo {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.assinatura-card__plano-nome {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: baseline;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.assinatura-card__plano-nome small {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  -webkit-text-fill-color: var(--text-muted);
+}
+
+.assinatura-card__trial {
+  display: grid;
+  gap: 8px;
+}
+
+.assinatura-card__trial-linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.assinatura-card__trial-linha span:first-child {
+  color: var(--status);
+}
+
+.assinatura-card__barra {
+  height: 10px;
+  overflow: hidden;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.assinatura-card__barra-fill {
+  position: relative;
+  display: block;
+  width: var(--pct, 0%);
+  height: 100%;
+  overflow: hidden;
+  background: var(--status-gradient);
+  background-size: 200% 100%;
+  border-radius: inherit;
+  transform-origin: left;
+  animation:
+    barraCresce 1.2s var(--ease) 0.3s backwards,
+    barraFluxo 6s linear infinite;
+}
+
+.assinatura-card__barra-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: shimmer 2.4s ease-in-out 1.6s infinite;
+}
+
+@keyframes barraCresce {
+  from { transform: scaleX(0); }
+}
+
+.assinatura-card__info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  padding-top: 16px;
+  margin: 0;
+  border-top: 1px dashed var(--border);
+}
+
+.assinatura-card__info dt {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.assinatura-card__info dd {
+  margin: 2px 0 0;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.assinatura-card__mensagem {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.assinatura-card__cta {
+  padding-block: 0.85rem;
+}
+
+.assinatura-card__vazio {
+  margin: 0;
+  padding: 16px 0;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ---------- Ações quando o pagamento está pendente ---------- */
+
+.assinatura-card__acoes {
+  display: grid;
+  gap: 8px;
+}
+
+/* ---------- Tela de retorno do checkout ---------- */
+
+.assinatura-retorno {
+  --cor: var(--info);
+  --cor-suave: var(--info-soft);
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  padding: 40px 28px 32px;
+  text-align: center;
+  animation: fadeInUp 0.5s var(--ease) backwards;
+}
+
+.assinatura-retorno[data-situacao='ativa'] { --cor: var(--success); --cor-suave: var(--success-soft); }
+.assinatura-retorno[data-situacao='bloqueado'],
+.assinatura-retorno[data-situacao='pendente'] { --cor: var(--warning); --cor-suave: var(--warning-soft); }
+.assinatura-retorno[data-situacao='problema'] { --cor: var(--danger); --cor-suave: var(--danger-soft); }
+
+.assinatura-retorno__icone {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  color: var(--cor);
+  background: var(--cor-suave);
+  border-radius: 50%;
+  box-shadow: 0 0 0 10px color-mix(in srgb, var(--cor) 10%, transparent);
+  animation: popIn 0.5s var(--ease) backwards;
+}
+
+.assinatura-retorno__icone svg {
+  width: 40px;
+  height: 40px;
+}
+
+.assinatura-retorno[data-situacao='verificando'] .assinatura-retorno__icone svg {
+  animation: spin 0.9s linear infinite;
+}
+
+.assinatura-retorno__titulo {
+  margin: 8px 0 0;
+  font-size: 1.5rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+.assinatura-retorno__texto {
+  max-width: 44ch;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.assinatura-retorno__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+/* ---------- Cancelar assinatura ---------- */
+
+.assinatura-card__cancelar {
+  justify-self: center;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  transition:
+    color 0.2s var(--ease),
+    background-color 0.2s var(--ease);
+}
+
+.assinatura-card__cancelar:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.assinatura-card__confirmar {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: var(--danger-soft);
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+  border-radius: var(--radius-md);
+  animation: slideDown 0.3s var(--ease) backwards;
+}
+
+.assinatura-card__confirmar p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.assinatura-card__acoes--linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* ---------- ManageSystem: cartão do plano atual e pagamentos ---------- */
+
+.assinatura-atual {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  animation: fadeInUp 0.5s var(--ease) backwards;
+}
+
+.assinatura-atual__info {
+  display: grid;
+  gap: 2px;
+}
+
+.assinatura-atual__rotulo {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.assinatura-atual__plano {
+  font-size: 1.4rem;
+  letter-spacing: -0.02em;
+}
+
+.assinatura-atual__linha,
+.assinatura-atual__cobranca {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.assinatura-atual__lado {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.assinatura-pagamentos {
+  margin-top: 20px;
+}
+
+.plano-opcao[data-atual] {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-glow);
+}
+
+.plano-opcao__descricao {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.plano-opcao__lista svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--success);
+}
+
+.plano-opcao__dica {
+  font-size: 0.78rem;
+  color: var(--text-subtle);
+  text-align: center;
+}

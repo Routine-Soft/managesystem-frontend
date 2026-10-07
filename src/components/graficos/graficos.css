@@ -1,0 +1,215 @@
+/* ---------- Gráficos (área, barras) ---------- */
+
+.grafico {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  animation: fadeIn 0.6s var(--ease) backwards;
+}
+
+.grafico svg {
+  display: block;
+  overflow: visible;
+  border-radius: var(--radius-sm);
+}
+
+.grafico svg:focus-visible {
+  outline-offset: 4px;
+}
+
+.grafico--vazio {
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  font-size: 0.875rem;
+  color: var(--text-subtle);
+  text-align: center;
+  background: repeating-linear-gradient(135deg, transparent 0 10px, var(--surface-2) 10px 11px);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+}
+
+.grafico__grade,
+.grafico__base {
+  stroke: var(--chart-grid);
+  stroke-width: 1;
+}
+
+.grafico__linha {
+  fill: none;
+  stroke: var(--chart-1);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.grafico__area {
+  fill: var(--chart-1-fill);
+}
+
+.grafico__eixo {
+  font-size: 11px;
+  fill: var(--text-muted);
+}
+
+.grafico__guia {
+  stroke: var(--text-subtle);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.grafico__ponto {
+  fill: var(--chart-1);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.grafico__barra {
+  fill: var(--chart-1);
+  opacity: 0.85;
+  transition: opacity 0.15s var(--ease);
+}
+
+.grafico__barra--erro {
+  fill: var(--danger);
+  opacity: 1;
+}
+
+.is-ativo .grafico__barra {
+  opacity: 1;
+}
+
+.grafico__dica {
+  position: absolute;
+  top: -6px;
+  z-index: 3;
+  display: grid;
+  gap: 1px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  line-height: 1.3;
+  color: var(--text);
+  white-space: nowrap;
+  pointer-events: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  transform: translate(-50%, -100%);
+  animation: fadeIn 0.12s var(--ease) backwards;
+}
+
+.grafico__dica span {
+  color: var(--text-muted);
+}
+
+/* ---------- Anel ---------- */
+
+.anel {
+  position: relative;
+  flex: none;
+  --cor: var(--success);
+}
+
+.anel[data-tom='warning'] { --cor: var(--warning); }
+.anel[data-tom='danger'] { --cor: var(--danger); }
+.anel[data-tom='info'] { --cor: var(--chart-1); }
+
+.anel svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.anel__trilho {
+  fill: none;
+  stroke: var(--chart-track);
+  stroke-width: 10;
+}
+
+.anel__valor {
+  fill: none;
+  stroke: var(--cor);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.8s var(--ease);
+  animation: anelEntra 1s var(--ease) backwards;
+}
+
+@keyframes anelEntra {
+  from { stroke-dasharray: 0 999; }
+}
+
+.anel__texto {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+/* ---------- Medidor ---------- */
+
+.medidor {
+  height: 8px;
+  overflow: hidden;
+  background: var(--chart-track);
+  border-radius: 999px;
+  --cor: var(--success);
+}
+
+.medidor[data-tom='warning'] { --cor: var(--warning); }
+.medidor[data-tom='danger'] { --cor: var(--danger); }
+.medidor[data-tom='info'] { --cor: var(--chart-1); }
+
+.medidor__fill {
+  display: block;
+  height: 100%;
+  background: var(--cor);
+  border-radius: inherit;
+  transform-origin: left;
+  transition: width 0.6s var(--ease);
+  animation: growBar 0.9s var(--ease) backwards;
+}
+
+/* ---------- Disponibilidade (30 dias) ---------- */
+
+.disponibilidade {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(30, minmax(0, 1fr));
+  gap: 3px;
+  height: 34px;
+}
+
+.disponibilidade__dia {
+  background: var(--success);
+  border-radius: 4px;
+  cursor: default;
+  opacity: 0.9;
+  transition: transform 0.15s var(--ease), opacity 0.15s var(--ease);
+  animation: popIn 0.4s var(--ease) backwards;
+  animation-delay: calc(var(--i) * 15ms);
+}
+
+.disponibilidade__dia:hover,
+.disponibilidade__dia:focus-visible {
+  opacity: 1;
+  transform: scaleY(1.12);
+}
+
+.disponibilidade__dia[data-estado='queda'] { background: var(--danger); }
+.disponibilidade__dia[data-estado='lentidao'] { background: var(--warning); }
+.disponibilidade__dia[data-estado='sem_dados'] { background: var(--chart-track); }
+
+.disponibilidade__dica {
+  top: -8px;
+}
+
+@media (max-width: 420px) {
+  .disponibilidade {
+    gap: 2px;
+  }
+}

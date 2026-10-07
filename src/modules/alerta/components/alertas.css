@@ -1,0 +1,71 @@
+.alertas {
+  display: grid;
+  align-content: start;
+}
+
+.alertas > .card + .card {
+  margin-top: 16px;
+}
+
+.telegram__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.telegram__vincular {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+}
+
+.telegram__passos {
+  display: grid;
+  gap: 6px;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.telegram__aguardando {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 0;
+  font-weight: 600;
+  color: var(--info);
+}
+
+.telegram__pulso {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  background: var(--info);
+  border-radius: 50%;
+}
+
+.telegram__pulso::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: var(--info);
+  border-radius: 50%;
+  animation: pulseRing 1.6s ease-out infinite;
+}
+
+.alertas-tipos__texto {
+  display: grid;
+  min-width: 0;
+}
+
+.alertas-tipos > li {
+  flex-wrap: nowrap;
+}
+
+.alertas-tipos__texto {
+  flex: 1;
+}
+
+.alertas-tipos .switch {
+  flex: none;
+}

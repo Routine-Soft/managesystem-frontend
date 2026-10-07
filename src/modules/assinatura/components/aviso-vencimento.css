@@ -1,0 +1,80 @@
+/* Barra fina de vencimento no topo do conteúdo. A cor acompanha a proximidade da data. */
+.aviso-vencimento {
+  --tom: var(--info);
+  --tom-suave: var(--info-soft);
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 5px 44px 5px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--tom);
+  text-align: center;
+  background: var(--tom-suave);
+  border-bottom: 1px solid color-mix(in srgb, var(--tom) 30%, transparent);
+  animation: avisoEntra 0.35s var(--ease) backwards;
+}
+
+.aviso-vencimento[data-tom='warning'] { --tom: var(--warning); --tom-suave: var(--warning-soft); }
+.aviso-vencimento[data-tom='danger'] { --tom: var(--danger); --tom-suave: var(--danger-soft); }
+
+.aviso-vencimento__pagar {
+  padding: 2px 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  background: var(--tom);
+  border-radius: 999px;
+  transition: filter 0.2s var(--ease);
+}
+
+.aviso-vencimento__pagar:hover {
+  filter: brightness(1.1);
+}
+
+.aviso-vencimento__pagar:focus-visible,
+.aviso-vencimento__fechar:focus-visible {
+  outline: 2px solid var(--tom);
+  outline-offset: 2px;
+}
+
+.aviso-vencimento__fechar {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  color: var(--tom);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.aviso-vencimento__fechar:hover {
+  background: color-mix(in srgb, var(--tom) 15%, transparent);
+}
+
+.aviso-vencimento__fechar svg {
+  width: 15px;
+  height: 15px;
+}
+
+@keyframes avisoEntra {
+  from { opacity: 0; transform: translateY(-100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aviso-vencimento {
+    animation: none;
+  }
+}

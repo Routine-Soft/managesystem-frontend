@@ -1,0 +1,195 @@
+/* ==========================================================================
+   Tokens de design. Cada cor é definida uma única vez com light-dark(claro, escuro);
+   o modo ativo é decidido por color-scheme, controlado por html[data-theme].
+   ========================================================================== */
+
+:root {
+  color-scheme: light dark;
+
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --bg: light-dark(#f6f7fb, #0b1120);
+  --surface: light-dark(#ffffff, #111a2e);
+  --surface-2: light-dark(#f1f4f9, #16213a);
+  --text: light-dark(#1e293b, #e2e8f0);
+  --text-muted: light-dark(#64748b, #94a3b8);
+  --text-subtle: light-dark(#94a3b8, #64748b);
+  --border: light-dark(#e2e8f0, #24324d);
+  --border-strong: light-dark(#cbd5e1, #3a4a68);
+
+  --primary: light-dark(#4f46e5, #818cf8);
+  --primary-hover: light-dark(#4338ca, #a5b4fc);
+  --primary-soft: light-dark(rgba(79, 70, 229, 0.1), rgba(129, 140, 248, 0.16));
+  --primary-ring: light-dark(rgba(99, 102, 241, 0.3), rgba(129, 140, 248, 0.34));
+  --on-primary: light-dark(#ffffff, #0b1120);
+  --gradient-primary: linear-gradient(135deg, light-dark(#4f46e5, #818cf8), light-dark(#0891b2, #22d3ee));
+  --gradient-text: linear-gradient(135deg, light-dark(#0f172a, #f1f5f9) 20%, light-dark(#4f46e5, #a5b4fc));
+
+  --success: light-dark(#0f766e, #2dd4bf);
+  --success-soft: light-dark(rgba(15, 118, 110, 0.12), rgba(45, 212, 191, 0.14));
+  --warning: light-dark(#b45309, #fbbf24);
+  --warning-soft: light-dark(rgba(217, 119, 6, 0.12), rgba(251, 191, 36, 0.14));
+  --danger: light-dark(#b91c1c, #f87171);
+  --danger-soft: light-dark(rgba(220, 38, 38, 0.1), rgba(248, 113, 113, 0.14));
+  --info: light-dark(#1d4ed8, #60a5fa);
+  --info-soft: light-dark(rgba(37, 99, 235, 0.1), rgba(96, 165, 250, 0.14));
+  --violet: light-dark(#6d28d9, #a78bfa);
+  --violet-soft: light-dark(rgba(109, 40, 217, 0.1), rgba(167, 139, 250, 0.16));
+
+  --glass-bg: light-dark(rgba(255, 255, 255, 0.7), rgba(17, 26, 46, 0.66));
+  --glass-border: light-dark(rgba(255, 255, 255, 0.7), rgba(148, 163, 184, 0.16));
+
+  --blob-1: light-dark(rgba(99, 102, 241, 0.3), rgba(79, 70, 229, 0.26));
+  --blob-2: light-dark(rgba(34, 211, 238, 0.28), rgba(14, 116, 144, 0.32));
+  --blob-3: light-dark(rgba(45, 212, 191, 0.24), rgba(13, 148, 136, 0.18));
+  --dot: light-dark(rgba(79, 70, 229, 0.2), rgba(148, 163, 184, 0.16));
+
+  --shadow-sm: 0 1px 2px light-dark(rgba(15, 23, 42, 0.06), rgba(0, 0, 0, 0.35));
+  --shadow-md: 0 6px 18px -4px light-dark(rgba(15, 23, 42, 0.1), rgba(0, 0, 0, 0.45));
+  --shadow-lg: 0 24px 48px -12px light-dark(rgba(15, 23, 42, 0.18), rgba(0, 0, 0, 0.6));
+  --shadow-primary: 0 8px 22px -6px light-dark(rgba(79, 70, 229, 0.5), rgba(129, 140, 248, 0.35));
+  --shadow-glow: 0 0 0 1px var(--primary-ring), 0 14px 34px -10px var(--primary-ring);
+
+  /* Gráficos: série principal, grade e trilho dos medidores */
+  --chart-1: light-dark(#4f46e5, #818cf8);
+  --chart-1-fill: light-dark(rgba(79, 70, 229, 0.14), rgba(129, 140, 248, 0.2));
+  --chart-grid: light-dark(#e8ecf3, #1f2b44);
+  --chart-track: light-dark(#e8ecf3, #1d2840);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+:root[data-theme='system'] {
+  color-scheme: light dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.35s var(--ease),
+    color 0.35s var(--ease);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--primary-ring);
+}
+
+/* ==========================================================================
+   Animações
+   Os keyframes definem só o estado inicial (from) e usam fill-mode "backwards":
+   depois de terminar, o elemento volta ao CSS normal e o :hover continua funcionando.
+   ========================================================================== */
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.92); }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; }
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(28px) scale(0.95); }
+}
+
+@keyframes modalOut {
+  to { opacity: 0; transform: translateY(14px) scale(0.97); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+}
+
+@keyframes shake {
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(2px); }
+}
+
+@keyframes shimmer {
+  to { transform: translateX(100%); }
+}
+
+@keyframes float {
+  50% { transform: translate3d(24px, -22px, 0) scale(1.08); }
+}
+
+@keyframes floatSm {
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes gradientShift {
+  to { background-position: 100% 100%; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes growBar {
+  from { transform: scaleX(0); }
+}
+
+@keyframes spinAngle {
+  to { --angle: 360deg; }
+}
+
+@keyframes pulseRing {
+  from { transform: scale(1); opacity: 0.55; }
+  to { transform: scale(1.55); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

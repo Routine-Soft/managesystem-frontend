@@ -1,0 +1,79 @@
+.app-shell {
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+  min-height: 100dvh;
+  background:
+    radial-gradient(48rem 32rem at 105% -8%, var(--blob-1), transparent 70%),
+    radial-gradient(40rem 30rem at 30% 115%, var(--blob-3), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+.app-main {
+  min-width: 0;
+}
+
+.app-topbar,
+.app-overlay {
+  display: none;
+}
+
+.app-pular {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 200;
+  padding: 8px 14px;
+  font-weight: 600;
+  color: var(--on-primary);
+  text-decoration: none;
+  background: var(--primary);
+  border-radius: var(--radius-md);
+  transform: translateY(-160%);
+  transition: transform 0.2s var(--ease);
+}
+
+.app-pular:focus {
+  transform: none;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    display: block;
+  }
+
+  .app-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 16px;
+    background: var(--glass-bg);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .app-topbar__menu {
+    width: 40px;
+    height: 40px;
+  }
+
+  .app-topbar__menu svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .app-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 35;
+    display: block;
+    background: light-dark(rgba(15, 23, 42, 0.42), rgba(2, 6, 23, 0.6));
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    animation: fadeIn 0.25s var(--ease) backwards;
+  }
+}

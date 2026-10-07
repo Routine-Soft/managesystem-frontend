@@ -1,0 +1,172 @@
+.sites-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+  gap: 16px;
+}
+
+.site-card {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: 18px;
+  animation: fadeInUp 0.5s var(--ease) backwards;
+  animation-delay: calc(var(--i, 0) * 60ms);
+  transition: box-shadow 0.25s var(--ease), transform 0.25s var(--ease);
+}
+
+.site-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.site-card__topo {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.site-card__nome {
+  display: grid;
+  min-width: 0;
+}
+
+.site-card__nome strong {
+  font-size: 1.08rem;
+  word-break: break-all;
+}
+
+.site-card__acoes {
+  display: flex;
+  flex: none;
+  gap: 2px;
+  align-items: center;
+}
+
+.site-card__secao {
+  display: grid;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.site-card__secao h3 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.site-card__secao h3 svg {
+  width: 15px;
+  height: 15px;
+  color: var(--primary);
+}
+
+.site-card__secao p {
+  margin: 0;
+}
+
+.site-card__linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.92rem;
+}
+
+.site-card__erro {
+  color: var(--warning);
+}
+
+.site-card__rodape {
+  margin: 0;
+  text-align: right;
+}
+
+.caixas-uso {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  margin: 4px 0 0;
+  list-style: none;
+}
+
+.caixas-uso li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 80px auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.caixas-uso__email {
+  overflow: hidden;
+  font-size: 0.85rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+  .caixas-uso li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .caixas-uso .medidor {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+.gira svg {
+  animation: spin 0.9s linear infinite;
+}
+
+/* ----- Modal ----- */
+
+.site-abas {
+  justify-self: start;
+  margin-bottom: 4px;
+}
+
+.site-valor__linha {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 8px;
+}
+
+.caixas {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.caixas__linha {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) 40px;
+  gap: 8px;
+  align-items: center;
+}
+
+.caixas .btn {
+  justify-self: start;
+}
+
+@media (max-width: 560px) {
+  .caixas__linha {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 40px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .caixas__linha input[type='email'] {
+    grid-column: 1 / -1;
+  }
+}

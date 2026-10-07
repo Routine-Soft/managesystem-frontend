@@ -1,0 +1,15 @@
+.excluir-inline {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+  padding: 2px 2px 2px 10px;
+  background: var(--danger-soft);
+  border-radius: 999px;
+  animation: popIn 0.2s var(--ease) backwards;
+}
+
+.excluir-inline__texto {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--danger);
+}
