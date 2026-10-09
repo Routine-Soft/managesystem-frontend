@@ -3,7 +3,7 @@ import { useIdioma } from '@/i18n/useIdioma'
 import { diasAte, formatarData, formatarMoeda } from '@/i18n/formatar'
 import { IconeCartao, IconeCheck, IconePix, IconeAbrir } from '@/components/Icones/Icones'
 import { useAssinatura } from '../assinatura.hooks'
-import { precoDoPlano } from '../assinatura.utils'
+import { precoEmReais } from '../assinatura.utils'
 import PixModal from './PixModal'
 import './assinaturas-planos.css'
 import './assinatura.css'
@@ -104,10 +104,10 @@ export function AssinaturaPage() {
             {!loading && pagos.length > 0 && (
                 <div className="assinaturas__grade">
                     {pagos.map((plano, i) => {
-                        const preco = precoDoPlano(plano, idioma)
+                        const emReais = precoEmReais(plano.precoUSD, formas.cotacaoUSD)
                         const atual = String(assinatura?.planoId?._id) === String(plano._id) && ['ativa', 'cancelada', 'inadimplente'].includes(assinatura?.status)
                         const podeCartao = formas.cartao && !!plano.stripePriceId && !temCartaoAtivo && !pixAtivo
-                        const podePix = formas.pix && !!plano.precoBRL && !temCartaoAtivo && (!pixAtivo || atual)
+                        const podePix = formas.pix && !!plano.precoUSD && !temCartaoAtivo && (!pixAtivo || atual)
                         return (
                             <article key={plano._id} className="card plano-opcao" style={{ '--i': i }} data-atual={atual || undefined}>
                                 <header className="plano-opcao__topo">
@@ -116,9 +116,10 @@ export function AssinaturaPage() {
                                 </header>
                                 {plano.descricao && <p className="plano-opcao__descricao">{plano.descricao}</p>}
                                 <p className="plano-opcao__preco">
-                                    <strong>{formatarMoeda(preco.valor, preco.moeda, idioma)}</strong>
+                                    <strong>{formatarMoeda(plano.precoUSD, 'USD', idioma)}</strong>
                                     <span>{t('assinatura.porMes')}</span>
                                 </p>
+                                {formas.pix && emReais && <p className="plano-opcao__dica">{t('assinatura.emReais', { valor: formatarMoeda(emReais, 'BRL', idioma) })}</p>}
                                 <ul className="plano-opcao__lista">
                                     {[...limites(plano, t), ...t('assinatura.incluido')].map((item) => (
                                         <li key={item}><IconeCheck />{item}</li>
@@ -137,7 +138,6 @@ export function AssinaturaPage() {
                                             {pixAtivo ? t('assinatura.renovarPix') : t('assinatura.pagarPix')}
                                         </button>
                                     )}
-                                    {podePix && idioma === 'en' && <small className="plano-opcao__dica">{t('assinatura.pixSoBrasil')}</small>}
                                 </div>
                             </article>
                         )
@@ -169,7 +169,7 @@ export function AssinaturaPage() {
                 </section>
             )}
 
-            {pixDoPlano && <PixModal plano={pixDoPlano} onPago={aplicarAssinatura} onClose={() => setPixDoPlano(null)} />}
+            {pixDoPlano && <PixModal plano={pixDoPlano} cotacao={formas.cotacaoUSD} onPago={aplicarAssinatura} onClose={() => setPixDoPlano(null)} />}
         </div>
     )
 }

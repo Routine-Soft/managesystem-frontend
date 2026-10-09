@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useIdioma } from '@/i18n/useIdioma'
 import IdiomaToggle from '@/components/IdiomaToggle/IdiomaToggle'
+import SeletorPais from '@/components/SeletorPais/SeletorPais'
 import { atualizarMe, alterarMinhaSenha } from '../user.api'
 
 function Mensagem({ msg }) {
@@ -12,7 +13,7 @@ function Mensagem({ msg }) {
 export function MinhaConta() {
     const { user, atualizarUsuarioLogado } = useAuthContext()
     const { t } = useIdioma()
-    const [form, setForm] = useState({ nomeCompleto: user?.nomeCompleto ?? '', email: user?.email ?? '', telefone: user?.telefone ?? '', nomeEmpresa: user?.nomeEmpresa ?? '' })
+    const [form, setForm] = useState({ nomeCompleto: user?.nomeCompleto ?? '', email: user?.email ?? '', telefone: user?.telefone ?? '', nomeEmpresa: user?.nomeEmpresa ?? '', pais: user?.pais ?? 'BR' })
     const [senha, setSenha] = useState({ currentPassword: '', newPassword: '' })
     const [salvando, setSalvando] = useState(null)
     const [msgDados, setMsgDados] = useState(null)
@@ -24,7 +25,7 @@ export function MinhaConta() {
         setMsgDados(null)
         setSalvando('dados')
         try {
-            const r = await atualizarMe(ehAdmin ? form : { ...form, nomeEmpresa: undefined })
+            const r = await atualizarMe(ehAdmin ? form : { ...form, nomeEmpresa: undefined, pais: undefined })
             atualizarUsuarioLogado(r.data)
             setMsgDados({ tipo: 'success', texto: r.message })
         } catch (err) {
@@ -71,6 +72,13 @@ export function MinhaConta() {
                     <div className="field"><label className="field__label" htmlFor="mc-email">{t('conta.email')}</label><input id="mc-email" className="input" type="email" required {...campo('email')} /></div>
                     <div className="field"><label className="field__label" htmlFor="mc-tel">{t('conta.telefone')}</label><input id="mc-tel" className="input" type="tel" {...campo('telefone')} /></div>
                     {ehAdmin && <div className="field"><label className="field__label" htmlFor="mc-emp">{t('conta.empresa')}</label><input id="mc-emp" className="input" required {...campo('nomeEmpresa')} /></div>}
+                    {ehAdmin && (
+                        <div className="field">
+                            <label className="field__label" htmlFor="mc-pais">{t('auth.pais')}</label>
+                            <SeletorPais id="mc-pais" value={form.pais} onChange={(pais) => setForm({ ...form, pais })} />
+                            <span className="field__hint">{t('auth.paisDica')}</span>
+                        </div>
+                    )}
                     <div className="field field--full">
                         <span className="field__label">{t('conta.idioma')}</span>
                         <div><IdiomaToggle onTrocar={trocarIdioma} /></div>

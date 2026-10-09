@@ -6,9 +6,11 @@ import alerta from './textos/alerta'
 import assinatura from './textos/assinatura'
 import conta from './textos/conta'
 import admin from './textos/admin'
+import contratante from './textos/contratante'
+import portal from './textos/portal'
 
 // Cada área tem { pt: {...}, en: {...} }. A chave é "area.caminho.do.texto"; {nome} é trocado pelos parâmetros.
-const TEXTOS = { comum, auth, servidor, site, alerta, assinatura, conta, admin }
+const TEXTOS = { comum, auth, servidor, site, alerta, assinatura, conta, admin, contratante, portal }
 
 function buscar(tabela, caminho) {
     return caminho.reduce((obj, parte) => (obj == null ? undefined : obj[parte]), tabela)

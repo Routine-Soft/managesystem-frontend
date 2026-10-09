@@ -1,9 +1,9 @@
 import { diasAte } from '@/i18n/formatar'
 
-// Preço do plano no idioma: real em português, dólar em inglês (se o plano tiver).
-export function precoDoPlano(plano, idioma) {
-    if (idioma === 'en' && plano.precoUSD) return { valor: plano.precoUSD, moeda: 'USD' }
-    return { valor: plano.precoBRL, moeda: 'BRL' }
+// Os planos têm preço só em dólar. No Pix (Brasil), o valor em reais sai pela cotação do dia.
+export function precoEmReais(precoUSD, cotacao) {
+    if (!precoUSD || !cotacao) return null
+    return Math.round(precoUSD * cotacao * 100) / 100
 }
 
 // Aviso da barra do topo: teste acabando, Pix acabando ou cartão em atraso (até 7 dias antes).

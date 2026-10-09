@@ -13,6 +13,16 @@ export function Login() {
     const [senha, setSenha] = useState('')
     const [enviando, setEnviando] = useState(false)
     const [erro, setErro] = useState(null)
+    // Veio para cá porque a sessão venceu: mostra o aviso uma vez.
+    const [expirou] = useState(() => {
+        try {
+            const sim = sessionStorage.getItem('sessaoExpirada') === '1'
+            sessionStorage.removeItem('sessaoExpirada')
+            return sim
+        } catch {
+            return false
+        }
+    })
 
     if (isAuthenticated) return <Navigate to="/inicio" replace />
 
@@ -38,6 +48,7 @@ export function Login() {
             </ul>
 
             <form className="auth-form" onSubmit={entrar}>
+                {expirou && !erro && <p className="alert alert--info" role="status">{t('auth.sessaoExpirada')}</p>}
                 {erro && <p className="alert alert--error" role="alert">{erro.message}</p>}
                 <div className="field">
                     <label className="field__label" htmlFor="login-email">{t('auth.email')}</label>

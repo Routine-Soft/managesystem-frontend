@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import httpClient from '@/services/httpClient'
 import { useIdioma } from '@/i18n/useIdioma'
 import * as userApi from '@/modules/user/user.api'
@@ -16,6 +16,13 @@ function lerUsuario() {
 export function useAuth() {
     const { idioma, setIdioma } = useIdioma()
     const [user, setUser] = useState(() => (httpClient.tokenManager.temSessao() ? lerUsuario() : null))
+
+    // O httpClient avisa quando a sessão venceu de vez (não deu para renovar): a tela desloga.
+    useEffect(() => {
+        const deslogar = () => setUser(null)
+        window.addEventListener('sessao:expirada', deslogar)
+        return () => window.removeEventListener('sessao:expirada', deslogar)
+    }, [])
 
     function iniciarSessao({ accessToken, refreshToken, user: logado }) {
         httpClient.tokenManager.setTokens(accessToken, refreshToken)

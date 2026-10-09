@@ -7,7 +7,12 @@ import ServidorForm from './ServidorForm'
 
 export function EditarServidorModal({ servidor, onSalvo, onClose }) {
     const { t } = useIdioma()
-    const [form, setForm] = useState({ nome: servidor.nome, url: servidor.url ?? '', limiteLentidaoMs: servidor.limiteLentidaoMs ?? 3000 })
+    const [form, setForm] = useState({
+        nome: servidor.nome,
+        url: servidor.url ?? '',
+        limiteLentidaoMs: servidor.limiteLentidaoMs ?? 3000,
+        custo: { valor: servidor.custo?.valor ?? '', moeda: servidor.custo?.moeda ?? 'USD', provedor: servidor.custo?.provedor ?? '' },
+    })
     const [erro, setErro] = useState(null)
 
     async function salvar() {

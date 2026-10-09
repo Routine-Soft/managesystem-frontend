@@ -26,6 +26,7 @@ export function formularioDoSite(site) {
             moeda: site?.manual?.moeda ?? 'BRL',
             renovacaoAutomatica: !!site?.manual?.renovacaoAutomatica,
             observacao: site?.manual?.observacao ?? '',
+            linkRenovacao: site?.manual?.linkRenovacao ?? '',
         },
         emails: {
             provedor: site?.emails?.provedor ?? '',
@@ -33,6 +34,7 @@ export function formularioDoSite(site) {
             valor: site?.emails?.valor ?? '',
             moeda: site?.emails?.moeda ?? 'BRL',
             periodicidade: site?.emails?.periodicidade ?? 'anual',
+            linkRenovacao: site?.emails?.linkRenovacao ?? '',
             caixas: (site?.emails?.caixas ?? []).map((c) => ({ endereco: c.endereco, cotaGB: c.cotaGB ?? '', usadoGB: c.usadoGB ?? '' })),
         },
     }

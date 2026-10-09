@@ -751,3 +751,31 @@ select.input {
   font-weight: 600;
   color: var(--primary);
 }
+
+/* Valor com moeda ao lado: [USD ▾][ 0,00 ] */
+.valor-moeda {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 8px;
+}
+
+/* Etiqueta pequena no topo do cartão dizendo o que ele é (Servidor, Domínio). */
+.tipo-card {
+  justify-self: start;
+  align-self: start;
+  width: fit-content;
+  padding: 2px 9px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+  background: var(--primary-soft);
+  border: 1px solid var(--primary-ring);
+  border-radius: 999px;
+}
+
+.servidor-card__nome .tipo-card,
+.site-card__nome .tipo-card {
+  margin-bottom: 4px;
+}

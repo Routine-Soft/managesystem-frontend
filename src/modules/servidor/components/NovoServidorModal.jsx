@@ -9,7 +9,7 @@ import ComandoInstalacao from './ComandoInstalacao'
 // Dois passos: os dados do servidor e, depois, o comando para instalar o agente.
 export function NovoServidorModal({ onCriado, onClose }) {
     const { t } = useIdioma()
-    const [form, setForm] = useState({ nome: '', url: '', limiteLentidaoMs: 3000 })
+    const [form, setForm] = useState({ nome: '', url: '', limiteLentidaoMs: 3000, custo: { valor: '', moeda: 'USD', provedor: '' } })
     const [erro, setErro] = useState(null)
     const [criado, setCriado] = useState(null)
 

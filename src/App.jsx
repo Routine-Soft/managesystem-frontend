@@ -14,6 +14,11 @@ import AssinaturaPage from '@/modules/assinatura/components/AssinaturaPage'
 import AssinaturaRetorno from '@/modules/assinatura/components/AssinaturaRetorno'
 import Clientes from '@/modules/admin/components/Clientes'
 import PlanosAdmin from '@/modules/admin/components/PlanosAdmin'
+import Contratantes from '@/modules/contratante/components/Contratantes'
+import PortalLogin from '@/modules/portal/components/PortalLogin'
+import PortalAcesso from '@/modules/portal/components/PortalAcesso'
+import PortalPainel from '@/modules/portal/components/PortalPainel'
+import PortalRetorno from '@/modules/portal/components/PortalRetorno'
 
 function Protegida({ papeis, children }) {
     return (
@@ -31,9 +36,16 @@ export default function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/registro" element={<Registro />} />
 
+                    {/* Portal do cliente final (login e sessão próprios) */}
+                    <Route path="/portal" element={<PortalPainel />} />
+                    <Route path="/portal/login" element={<PortalLogin />} />
+                    <Route path="/portal/acesso/:token" element={<PortalAcesso />} />
+                    <Route path="/portal/retorno" element={<PortalRetorno />} />
+
                     <Route path="/inicio" element={<Protegida><VisaoGeral /></Protegida>} />
                     <Route path="/servidores/:id" element={<Protegida><ServidorPainel /></Protegida>} />
                     <Route path="/sites" element={<Protegida><Sites /></Protegida>} />
+                    <Route path="/contratantes" element={<Protegida><Contratantes /></Protegida>} />
                     <Route path="/alertas" element={<Protegida><Alertas /></Protegida>} />
                     <Route path="/assinatura" element={<Protegida papeis={['admin']}><AssinaturaPage /></Protegida>} />
                     <Route path="/assinatura/retorno" element={<Protegida papeis={['admin']}><AssinaturaRetorno /></Protegida>} />

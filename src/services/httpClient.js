@@ -29,8 +29,15 @@ class TokenManager {
 
 const tokenManager = new TokenManager()
 
+// Sessão vencida de vez: limpa tudo, avisa a tela (useAuth desloga) e vai para o login com um aviso.
 function irParaLogin() {
   tokenManager.clearTokens()
+  try {
+    sessionStorage.setItem('sessaoExpirada', '1')
+  } catch {
+    // storage indisponível: só não mostra o aviso
+  }
+  window.dispatchEvent(new Event('sessao:expirada'))
   window.location.hash = '#/login'
 }
 
@@ -76,9 +83,10 @@ async function makeRequest(url, options = {}) {
     throw { status: 0, message: lerIdioma() === 'en' ? 'Could not reach the server. Check your connection.' : 'Não foi possível falar com o servidor. Verifique sua conexão.' }
   }
 
-  if (response.status === 401 && !url.startsWith('/users/login') && tokenManager.temSessao()) {
-    if (await renovarToken()) {
+  if (response.status === 401 && !url.startsWith('/users/login')) {
+    if (tokenManager.temSessao() && (await renovarToken())) {
       response = await enviar(url, options)
+      if (response.status === 401) irParaLogin()
     } else {
       irParaLogin()
     }

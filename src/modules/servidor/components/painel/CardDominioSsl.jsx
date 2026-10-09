@@ -18,6 +18,9 @@ export function CardDominioSsl({ servidor: s, site, agora }) {
     const ssl = s.ssl?.expiraEm ? s.ssl : site?.ssl
     const diasSsl = diasAte(ssl?.expiraEm, agora)
     const renovaSozinho = s.certbot?.renovacaoAutomatica
+    const textoRenovacao = !renovaSozinho
+        ? t('servidor.dominioSsl.semRenovacaoAuto')
+        : s.certbot?.ferramenta === 'caddy' ? t('servidor.dominioSsl.renovacaoAutoCaddy') : t('servidor.dominioSsl.renovacaoAuto')
 
     return (
         <section className="card bloco" style={{ '--i': 5 }}>
@@ -51,7 +54,7 @@ export function CardDominioSsl({ servidor: s, site, agora }) {
                         {ssl?.expiraEm && (
                             <span className="texto-pequeno">
                                 {t('servidor.dominioSsl.validoAte', { data: formatarData(ssl.expiraEm, idioma) })}
-                                {s.certbot?.instalado && <> · {renovaSozinho ? t('servidor.dominioSsl.renovacaoAuto') : t('servidor.dominioSsl.semRenovacaoAuto')}</>}
+                                {s.certbot?.instalado && <> · {textoRenovacao}</>}
                             </span>
                         )}
                     </div>

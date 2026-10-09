@@ -4,14 +4,14 @@ import { useIdioma } from '@/i18n/useIdioma'
 import { formatarData, formatarMoeda } from '@/i18n/formatar'
 import { IconeCheck } from '@/components/Icones/Icones'
 import { gerarPix, sincronizarPix } from '../assinatura.api'
-import { documentoCompleto, formatarContagem, formatarDocumento } from '../assinatura.utils'
+import { documentoCompleto, formatarContagem, formatarDocumento, precoEmReais } from '../assinatura.utils'
 import './pix-modal.css'
 
 const INTERVALO_CONSULTA_MS = 5000
 const SITUACOES_ENCERRADAS = ['expirado', 'cancelado', 'rejeitado']
 
 // Pix avulso (Brasil): pede o documento, mostra o QR Code e confirma sozinho quando o pagamento cai.
-export function PixModal({ plano, onPago, onClose }) {
+export function PixModal({ plano, cotacao, onPago, onClose }) {
     const { t, idioma } = useIdioma()
     const [etapa, setEtapa] = useState('documento')
     const [documento, setDocumento] = useState('')
@@ -95,8 +95,8 @@ export function PixModal({ plano, onPago, onClose }) {
                         <form className="modal-form" onSubmit={gerar}>
                             <div className="pix__resumo">
                                 <span>{plano.nome}</span>
-                                <strong>{formatarMoeda(plano.precoBRL, 'BRL', idioma)}</strong>
-                                <small>{t('assinatura.pix.dias')}</small>
+                                <strong>{formatarMoeda(precoEmReais(plano.precoUSD, cotacao), 'BRL', idioma)}</strong>
+                                <small>{formatarMoeda(plano.precoUSD, 'USD', idioma)} · {t('assinatura.pix.dias')}</small>
                             </div>
                             {erro && <p className="alert alert--error" role="alert">{erro.message}</p>}
                             <div className="field">

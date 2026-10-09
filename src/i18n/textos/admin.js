@@ -1,8 +1,8 @@
 export default {
     pt: {
-        clientes: 'Clientes',
+        clientes: 'Assinantes',
         clientesSub: 'Contas, assinaturas e receita',
-        resumo: { clientes: 'Clientes', ativos: 'Assinaturas ativas', teste: 'Em teste', receita: 'Receita do mês', servidores: 'Servidores monitorados' },
+        resumo: { clientes: 'Assinantes', ativos: 'Assinaturas ativas', teste: 'Em teste', receita: 'Receita do mês', servidores: 'Servidores monitorados' },
         busca: 'Buscar por empresa ou e-mail',
         nenhumCliente: 'Nenhum cliente ainda',
         colunas: { empresa: 'Empresa', plano: 'Plano', situacao: 'Situação', uso: 'Uso', acoes: 'Ações' },
@@ -28,7 +28,6 @@ export default {
             tipo: 'Tipo',
             gratis: 'Grátis (teste)',
             pago: 'Pago',
-            precoBRL: 'Preço mensal (R$)',
             precoUSD: 'Preço mensal (US$)',
             stripePriceId: 'ID do preço no Stripe',
             stripeDica: 'Crie o produto no painel do Stripe (cobrança mensal) e cole aqui o ID do preço (price_...). Sem ele, só o Pix fica disponível.',
@@ -42,9 +41,9 @@ export default {
         semStripe: 'Sem Stripe',
     },
     en: {
-        clientes: 'Customers',
+        clientes: 'Subscribers',
         clientesSub: 'Accounts, subscriptions and revenue',
-        resumo: { clientes: 'Customers', ativos: 'Active subscriptions', teste: 'On trial', receita: 'Revenue this month', servidores: 'Monitored servers' },
+        resumo: { clientes: 'Subscribers', ativos: 'Active subscriptions', teste: 'On trial', receita: 'Revenue this month', servidores: 'Monitored servers' },
         busca: 'Search by company or e-mail',
         nenhumCliente: 'No customers yet',
         colunas: { empresa: 'Company', plano: 'Plan', situacao: 'Status', uso: 'Usage', acoes: 'Actions' },
@@ -70,7 +69,6 @@ export default {
             tipo: 'Type',
             gratis: 'Free (trial)',
             pago: 'Paid',
-            precoBRL: 'Monthly price (BRL)',
             precoUSD: 'Monthly price (USD)',
             stripePriceId: 'Stripe price ID',
             stripeDica: 'Create the product in the Stripe dashboard (monthly billing) and paste the price ID (price_...) here. Without it, only Pix is available.',

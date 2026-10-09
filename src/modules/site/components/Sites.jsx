@@ -36,6 +36,7 @@ function SiteCard({ site, servidores, indice, onEditar, onRemover, onVerificar }
         <article className="card site-card" style={{ '--i': indice }}>
             <header className="site-card__topo">
                 <div className="site-card__nome">
+                    <span className="tipo-card">{t('comum.tipoDominio')}</span>
                     <strong className="mono">{site.dominio}</strong>
                     {servidor && <span className="texto-pequeno">{t('site.servidorLigado', { nome: servidor.nome })}</span>}
                 </div>

@@ -1,0 +1,298 @@
+.contratantes-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+  gap: 16px;
+}
+
+.contratante-card {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  min-width: 0;
+  padding: 18px;
+  animation: fadeInUp 0.5s var(--ease) backwards;
+  animation-delay: calc(var(--i, 0) * 60ms);
+  transition: box-shadow 0.25s var(--ease), transform 0.25s var(--ease);
+}
+
+.contratante-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.contratante-card__topo {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.contratante-card__nome {
+  display: grid;
+  min-width: 0;
+}
+
+.contratante-card__nome strong {
+  font-size: 1.08rem;
+}
+
+.contratante-card__nome .texto-pequeno {
+  overflow-wrap: anywhere;
+}
+
+.contratante-card__acoes {
+  display: flex;
+  flex: none;
+  gap: 2px;
+  align-items: center;
+}
+
+.contratante-card__selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.contratante-card__ve {
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* Link de acesso gerado */
+.link-acesso {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  background: var(--primary-soft);
+  animation: fadeIn 0.3s var(--ease) backwards;
+}
+
+.link-acesso__linha {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.link-acesso .input {
+  font-size: 0.8rem;
+}
+
+/* Formulário */
+.contratante-ligacoes,
+.contratante-cobranca {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.contratante-ligacoes legend,
+.contratante-cobranca legend {
+  padding: 0 6px;
+}
+
+.contratante-cobranca__linha {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.itens-cobranca {
+  display: grid;
+  gap: 8px;
+}
+
+.itens-cobranca__linha {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.itens-cobranca__rodape {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Faturas */
+.faturas {
+  display: grid;
+  gap: 12px;
+}
+
+.faturas__topo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.faturas__topo .texto-pequeno {
+  flex: 1 1 260px;
+  margin: 0;
+}
+
+.faturas__lista {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fatura-linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.fatura-linha__info {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fatura-linha__lado {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.fatura-linha__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Contas de recebimento */
+.recebimentos {
+  display: grid;
+  gap: 14px;
+}
+
+.recebimento {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.recebimento__topo {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.recebimento__topo h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.recebimento__topo .texto-pequeno {
+  margin: 2px 0 0;
+}
+
+.recebimento__conta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: center;
+}
+
+.recebimento__form {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+
+.recebimento__form .field {
+  width: 100%;
+}
+
+.recebimento__passos {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 520px) {
+  .contratante-cobranca__linha {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .itens-cobranca__linha {
+    grid-template-columns: minmax(0, 1fr) 90px auto;
+  }
+}
+
+/* O que o cliente vê: filtro, busca e grupos separados */
+.ligacoes-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.ligacoes-grupo {
+  display: grid;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.ligacoes-grupo__titulo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  align-items: center;
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.ligacoes-grupo__titulo svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ligacoes-grupo__titulo .texto-pequeno {
+  margin-left: auto;
+  font-weight: 500;
+}
+
+@media (max-width: 520px) {
+  .ligacoes-filtros .pilulas {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+}
+
+.ligacoes-grupo .check-list {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+/* Campos alinhados pelo topo (alguns têm dica embaixo, outros não). */
+.contratante-form {
+  align-items: start;
+}

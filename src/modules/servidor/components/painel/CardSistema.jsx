@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useIdioma } from '@/i18n/useIdioma'
 import { IconeServidor } from '@/components/Icones/Icones'
+import { formatarMoeda } from '@/i18n/formatar'
 
 export function CardSistema({ servidor: s }) {
-    const { t } = useIdioma()
+    const { t, idioma } = useIdioma()
     const [aberto, setAberto] = useState(false)
     const lista = s.pacotes?.lista ?? []
     const seguranca = lista.filter((p) => p.seguranca)
@@ -16,6 +17,14 @@ export function CardSistema({ servidor: s }) {
                 <h2 className="bloco__titulo"><IconeServidor />{t('servidor.so.titulo')}</h2>
                 {verificado && <span className={`badge badge--${seguranca.length ? 'danger' : lista.length ? 'warning' : 'success'}`}>{lista.length ? t('servidor.so.pacotes', { n: lista.length }) : t('servidor.so.emDia')}</span>}
             </div>
+
+            {(s.custo?.valor != null || s.custo?.provedor) && (
+                <p className="custo-servidor">
+                    <span>{t('servidor.so.custo')}</span>
+                    <strong className="mono">{s.custo?.valor != null ? `${formatarMoeda(s.custo.valor, s.custo.moeda, idioma)}${t('servidor.so.porMes')}` : '—'}</strong>
+                    {s.custo?.provedor && <span className="texto-pequeno">{s.custo.provedor}</span>}
+                </p>
+            )}
 
             {!verificado ? (
                 <p className="texto-suave">{t('servidor.so.semInventario')}</p>

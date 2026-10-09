@@ -16,6 +16,7 @@ const GRUPOS = [
         itens: [
             { label: 'comum.menu.visaoGeral', path: '/inicio', Icone: I.IconePainel, papeis: TODOS },
             { label: 'comum.menu.sites', path: '/sites', Icone: I.IconeGlobo, papeis: TODOS },
+            { label: 'comum.menu.contratantes', path: '/contratantes', Icone: I.IconeUsuarios, papeis: TODOS },
             { label: 'comum.menu.alertas', path: '/alertas', Icone: I.IconeSino, papeis: TODOS },
         ],
     },

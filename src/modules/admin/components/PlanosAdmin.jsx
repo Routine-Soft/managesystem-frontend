@@ -9,7 +9,7 @@ import { IconeEtiqueta, IconeLapis, IconeMais } from '@/components/Icones/Icones
 import { usePlanosAdmin } from '../admin.hooks'
 import { atualizarPlano, criarPlano } from '../admin.api'
 
-const VAZIO = { nome: '', descricao: '', tipo: 'pago', precoBRL: '', precoUSD: '', stripePriceId: '', duracaoDiasTrial: '', limiteServidores: '', limiteSites: '', ativo: true }
+const VAZIO = { nome: '', descricao: '', tipo: 'pago', precoUSD: '', stripePriceId: '', duracaoDiasTrial: '', limiteServidores: '', limiteSites: '', ativo: true }
 
 function PlanoModal({ plano, onSalvo, onClose }) {
     const { t } = useIdioma()
@@ -50,7 +50,6 @@ function PlanoModal({ plano, onSalvo, onClose }) {
                         <div className="field field--full"><label className="field__label" htmlFor="pl-desc">{t('admin.campos.descricao')}</label><input id="pl-desc" className="input" {...campo('descricao')} /></div>
                         {form.tipo === 'pago' ? (
                             <>
-                                <div className="field"><label className="field__label" htmlFor="pl-brl">{t('admin.campos.precoBRL')}</label><input id="pl-brl" className="input" type="number" min="0" step="0.01" {...campo('precoBRL')} /></div>
                                 <div className="field"><label className="field__label" htmlFor="pl-usd">{t('admin.campos.precoUSD')}</label><input id="pl-usd" className="input" type="number" min="0" step="0.01" {...campo('precoUSD')} /></div>
                                 <div className="field field--full">
                                     <label className="field__label" htmlFor="pl-stripe">{t('admin.campos.stripePriceId')}</label>
@@ -118,7 +117,7 @@ export function PlanosAdmin() {
                                     <span className="texto-pequeno">
                                         {p.tipo === 'gratis'
                                             ? `${t('admin.campos.gratis')} · ${p.duracaoDiasTrial ?? '—'} ${t('admin.dias').toLowerCase()}`
-                                            : `${formatarMoeda(p.precoBRL, 'BRL', idioma)} · ${formatarMoeda(p.precoUSD, 'USD', idioma)}`}
+                                            : formatarMoeda(p.precoUSD, 'USD', idioma)}
                                         {' · '}{p.limiteServidores ?? '∞'} / {p.limiteSites ?? '∞'}
                                     </span>
                                 </span>

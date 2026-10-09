@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useIdioma } from '@/i18n/useIdioma'
+import SeletorPais from '@/components/SeletorPais/SeletorPais'
+import { adivinharPais } from '@/i18n/paises'
 import AuthLayout from './AuthLayout'
 
 const VAZIO = { nomeCompleto: '', nomeEmpresa: '', email: '', telefone: '', password: '' }
@@ -10,7 +12,7 @@ export function Registro() {
     const { registrar, isAuthenticated } = useAuthContext()
     const { t } = useIdioma()
     const navigate = useNavigate()
-    const [form, setForm] = useState(VAZIO)
+    const [form, setForm] = useState(() => ({ ...VAZIO, pais: adivinharPais() }))
     const [enviando, setEnviando] = useState(false)
     const [erro, setErro] = useState(null)
 
@@ -54,7 +56,12 @@ export function Registro() {
                     <label className="field__label" htmlFor="reg-telefone">{t('auth.telefone')} <small>({t('comum.opcional')})</small></label>
                     <input id="reg-telefone" className="input" type="tel" autoComplete="tel" {...campo('telefone')} />
                 </div>
-                <div className="field field--full">
+                <div className="field">
+                    <label className="field__label" htmlFor="reg-pais">{t('auth.pais')}</label>
+                    <SeletorPais id="reg-pais" value={form.pais} onChange={(pais) => setForm({ ...form, pais })} required />
+                    <span className="field__hint">{t('auth.paisDica')}</span>
+                </div>
+                <div className="field">
                     <label className="field__label" htmlFor="reg-senha">{t('auth.senha')}</label>
                     <input id="reg-senha" className="input" type="password" autoComplete="new-password" minLength={6} required {...campo('password')} />
                     <span className="field__hint">{t('auth.senhaDica')}</span>

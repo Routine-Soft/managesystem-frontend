@@ -1,3 +1,5 @@
+import './Marca.css'
+
 // Marca: selo com "pulso" (monitoramento) sobre o degradê + nome da empresa logada.
 export function Marca({ empresa }) {
     return (

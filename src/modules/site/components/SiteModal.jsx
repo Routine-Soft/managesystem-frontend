@@ -79,6 +79,11 @@ export function SiteModal({ site, servidores, onSalvo, onClose }) {
                                     <input id="site-valor" className="input" inputMode="decimal" placeholder="0,00" value={form.manual.valorRenovacao} onChange={(e) => setManual('valorRenovacao', e.target.value)} />
                                 </div>
                             </div>
+                            <div className="field field--full">
+                                <label className="field__label" htmlFor="site-link">{t('site.form.linkRenovacao')}</label>
+                                <input id="site-link" className="input" inputMode="url" placeholder="https://" value={form.manual.linkRenovacao} onChange={(e) => setManual('linkRenovacao', e.target.value)} />
+                                <span className="field__hint">{t('site.form.linkRenovacaoDica')}</span>
+                            </div>
                             <label className="check field--full">
                                 <input type="checkbox" checked={form.manual.renovacaoAutomatica} onChange={(e) => setManual('renovacaoAutomatica', e.target.checked)} />
                                 {t('site.form.renovaSozinho')}
@@ -115,6 +120,12 @@ export function SiteModal({ site, servidores, onSalvo, onClose }) {
                                     <option value="mensal">{t('site.form.mensal')}</option>
                                     <option value="anual">{t('site.form.anual')}</option>
                                 </select>
+                            </div>
+
+                            <div className="field field--full">
+                                <label className="field__label" htmlFor="email-link">{t('site.form.linkRenovacao')}</label>
+                                <input id="email-link" className="input" inputMode="url" placeholder="https://" value={form.emails.linkRenovacao} onChange={(e) => setEmails('linkRenovacao', e.target.value)} />
+                                <span className="field__hint">{t('site.form.linkRenovacaoDica')}</span>
                             </div>
 
                             <fieldset className="field--full caixas">

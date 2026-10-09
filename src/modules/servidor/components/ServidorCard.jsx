@@ -22,6 +22,7 @@ export function ServidorCard({ servidor: s, indice, agora }) {
         <Link to={`/servidores/${s._id}`} className="card servidor-card" style={{ '--i': indice }} data-status={s.status}>
             <header className="servidor-card__topo">
                 <div className="servidor-card__nome">
+                    <span className="tipo-card">{t('comum.tipoServidor')}</span>
                     <strong>{s.nome}</strong>
                     <span>{s.url ? hostDaUrl(s.url) : resumoDoSistema(s.sistema, t, formatarBytes, idioma) ?? '—'}</span>
                 </div>

@@ -18,6 +18,9 @@ export default {
         senhaDica: 'Ao menos 6 caracteres',
         criando: 'Criando conta...',
         jaTemConta: 'Já tem conta?',
+        sessaoExpirada: 'Sua sessão expirou. Entre novamente.',
+        pais: 'País',
+        paisDica: 'Brasil paga com Pix; outros países, com cartão.',
     },
     en: {
         slogan: 'Your servers, domains and certificates in one place.',
@@ -38,5 +41,8 @@ export default {
         senhaDica: 'At least 6 characters',
         criando: 'Creating account...',
         jaTemConta: 'Already have an account?',
+        sessaoExpirada: 'Your session expired. Please sign in again.',
+        pais: 'Country',
+        paisDica: 'Brazil pays with Pix; other countries, by card.',
     },
 }
