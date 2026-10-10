@@ -10,6 +10,7 @@ import { sessaoDoPortal } from '@/services/portalClient'
 import { desconectarTelegram, linkDoTelegram, pagarFatura } from '../portal.api'
 import { useResumoDoPortal } from '../portal.hooks'
 import PortalLayout from './PortalLayout'
+import PortalTecnico from './PortalTecnico'
 
 const dataUTC = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' }
 
@@ -245,6 +246,12 @@ export function PortalPainel() {
                     <div className="portal-grade">
                         {dados.servidores.map((s, i) => <CartaoServidor key={s._id} servidor={s} indice={i} />)}
                         {dados.sites.map((s, i) => <CartaoSite key={s._id} site={s} indice={i + dados.servidores.length} />)}
+                    </div>
+
+                    {/* Primeiro o resumo em linguagem simples; descendo, a parte técnica para quem quiser ver a fundo. */}
+                    <PortalTecnico servidores={dados.servidores} />
+
+                    <div className="portal-grade">
                         <Faturas faturas={dados.faturas} pagamento={dados.pagamento} />
                         <Telegram telegram={dados.telegram} onMudou={recarregar} />
                     </div>

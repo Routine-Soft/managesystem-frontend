@@ -54,3 +54,33 @@ export function useResumoDoPortal() {
 
     return { dados, loading, erro, recarregar }
 }
+
+// Parte técnica de um servidor: busca ao abrir, ao trocar o período e a cada minuto (com a aba visível).
+export function usePainelDoServidorNoPortal(id, periodo) {
+    const [dados, setDados] = useState(null)
+    const [erro, setErro] = useState(null)
+
+    useEffect(() => {
+        let ignore = false
+        const carregar = () => api.buscarPainelDoServidor(id, periodo)
+            .then((r) => {
+                if (!ignore) {
+                    setDados(r.data)
+                    setErro(null)
+                }
+            })
+            .catch((e) => {
+                if (!ignore) setErro(e)
+            })
+        carregar()
+        const intervalo = setInterval(() => {
+            if (document.visibilityState === 'visible') carregar()
+        }, 60000)
+        return () => {
+            ignore = true
+            clearInterval(intervalo)
+        }
+    }, [id, periodo])
+
+    return { dados, erro }
+}

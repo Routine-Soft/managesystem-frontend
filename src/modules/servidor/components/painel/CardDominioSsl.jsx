@@ -15,7 +15,10 @@ export function CardDominioSsl({ servidor: s, site, agora }) {
     const { t, idioma } = useIdioma()
     const expiraDominio = site?.manual?.expiraEm ?? site?.registro?.expiraEm
     const diasDominio = diasAte(expiraDominio, agora)
-    const ssl = s.ssl?.expiraEm ? s.ssl : site?.ssl
+    // O certificado é o do endereço do servidor; sem ele, o do domínio. Mostra o endereço para não confundir os dois.
+    const sslDoServidor = !!s.ssl?.expiraEm
+    const ssl = sslDoServidor ? s.ssl : site?.ssl
+    const hostDoSsl = sslDoServidor && s.url ? new URL(s.url).hostname : ssl ? site?.dominio : null
     const diasSsl = diasAte(ssl?.expiraEm, agora)
     const renovaSozinho = s.certbot?.renovacaoAutomatica
     const textoRenovacao = !renovaSozinho
@@ -49,7 +52,7 @@ export function CardDominioSsl({ servidor: s, site, agora }) {
             <div className="dominio dominio--ssl">
                 <div className="dominio__linha">
                     <div>
-                        <span className="texto-pequeno">{t('servidor.dominioSsl.ssl')}</span>
+                        <span className="texto-pequeno">{hostDoSsl ? t('servidor.dominioSsl.sslDe', { host: hostDoSsl }) : t('servidor.dominioSsl.ssl')}</span>
                         <strong>{ssl?.emissor ?? (s.url ? '—' : t('servidor.dominioSsl.semSsl'))}</strong>
                         {ssl?.expiraEm && (
                             <span className="texto-pequeno">

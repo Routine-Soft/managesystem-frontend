@@ -378,3 +378,41 @@
     display: none;
   }
 }
+
+/* Parte técnica: os mesmos cartões do painel do programador, abaixo do resumo simples. */
+.portal-tecnico {
+  display: grid;
+  gap: 16px;
+  margin-block: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.portal-tecnico__cabecalho {
+  display: grid;
+  gap: 4px;
+}
+
+.portal-tecnico__cabecalho .bloco__titulo,
+.portal-tecnico__cabecalho p {
+  margin: 0;
+}
+
+.portal-tecnico__servidor {
+  display: grid;
+  gap: 12px;
+}
+
+.portal-tecnico__nome {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.portal-tecnico__nome svg {
+  width: 18px;
+  height: 18px;
+  color: var(--primary);
+}
