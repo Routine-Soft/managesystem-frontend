@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import ThemeToggle from '@/components/ThemeToggle/ThemeToggle'
 import IdiomaToggle from '@/components/IdiomaToggle/IdiomaToggle'
 import './auth.css'
@@ -17,11 +18,11 @@ export function AuthLayout({ children, wide = false }) {
             </div>
 
             <main className={`auth-card glass${wide ? ' auth-card--wide' : ''}`}>
-                <div className="auth-logo" aria-hidden="true">
+                <Link to="/" className="auth-logo" aria-label="ManageSystem">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M3 12h4l3-7 4 14 3-7h4" />
                     </svg>
-                </div>
+                </Link>
                 {children}
             </main>
         </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { useIdioma } from '@/i18n/useIdioma'
 import { sessaoDoPortal } from '@/services/portalClient'
 import AuthLayout from '@/modules/user/components/AuthLayout'
@@ -50,6 +50,9 @@ export function PortalLogin() {
             </form>
 
             <p className="auth-footer">{t('portal.login.esqueceu')}</p>
+            <p className="auth-footer auth-footer--outro">
+                {t('portal.login.ehDev')} <Link className="link" to="/login">{t('portal.login.irPainel')}</Link>
+            </p>
         </AuthLayout>
     )
 }

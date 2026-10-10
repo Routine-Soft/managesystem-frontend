@@ -52,6 +52,8 @@ export default {
             titulo: 'Acompanhe seu sistema',
             subtitulo: 'Veja se está no ar, quando vencem domínio e certificados, e pague a mensalidade.',
             esqueceu: 'Esqueceu a senha? Peça um novo link de acesso ao responsável pelo seu sistema.',
+            ehDev: 'É desenvolvedor ou agência?',
+            irPainel: 'Entrar no painel do desenvolvedor',
         },
         acesso: {
             ola: 'Olá, {nome}!',
@@ -126,6 +128,8 @@ export default {
             titulo: 'Follow your system',
             subtitulo: 'See if it is up, when domains and certificates expire, and pay the monthly fee.',
             esqueceu: 'Forgot your password? Ask the person who manages your system for a new access link.',
+            ehDev: 'Are you a developer or agency?',
+            irPainel: 'Sign in to the developer dashboard',
         },
         acesso: {
             ola: 'Hi, {nome}!',

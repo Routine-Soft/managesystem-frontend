@@ -19,6 +19,7 @@ import PortalLogin from '@/modules/portal/components/PortalLogin'
 import PortalAcesso from '@/modules/portal/components/PortalAcesso'
 import PortalPainel from '@/modules/portal/components/PortalPainel'
 import PortalRetorno from '@/modules/portal/components/PortalRetorno'
+import Landing from '@/modules/landing/components/Landing'
 
 function Protegida({ papeis, children }) {
     return (
@@ -33,6 +34,8 @@ export default function App() {
         <Router>
             <AuthProvider>
                 <Routes>
+                    {/* Página inicial pública */}
+                    <Route path="/" element={<Landing />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/registro" element={<Registro />} />
 
@@ -54,7 +57,7 @@ export default function App() {
                     <Route path="/clientes" element={<Protegida papeis={['super_admin']}><Clientes /></Protegida>} />
                     <Route path="/planos" element={<Protegida papeis={['super_admin']}><PlanosAdmin /></Protegida>} />
 
-                    <Route path="*" element={<Navigate to="/inicio" replace />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </AuthProvider>
         </Router>

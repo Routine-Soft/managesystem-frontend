@@ -66,6 +66,9 @@ export function Login() {
             <p className="auth-footer">
                 {t('auth.semConta')} <Link className="link" to="/registro">{t('auth.criarConta')}</Link>
             </p>
+            <p className="auth-footer auth-footer--outro">
+                {t('auth.ehCliente')} <Link className="link" to="/portal/login">{t('auth.irPortal')}</Link>
+            </p>
         </AuthLayout>
     )
 }
