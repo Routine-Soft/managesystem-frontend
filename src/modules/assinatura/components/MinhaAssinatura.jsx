@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { useIdioma } from '@/i18n/useIdioma'
 import { formatarData, formatarMoeda } from '@/i18n/formatar'
+import { Link } from 'react-router-dom'
 import { IconeAbrir, IconeCartao } from '@/components/Icones/Icones'
+import '@/components/ExcluirInline/ExcluirInline.css'
+import './assinatura.css'
 
 const TOM_DO_STATUS = { trial: 'info', pendente: 'warning', ativa: 'success', inadimplente: 'danger', cancelada: 'muted', expirada: 'muted' }
 const PULSA = ['trial', 'pendente', 'ativa']
@@ -16,7 +19,8 @@ function progressoDoTeste(assinatura) {
 }
 
 // Cartão "Minha assinatura" (mesmo modelo do SoftwareClinic): situação, plano, prazo do teste e as ações possíveis.
-export function MinhaAssinatura({ assinatura, carregando, onVerificar, onCancelar, onGerenciarStripe }) {
+// comLinkDosPlanos: usado em "Minha conta", leva para a página de assinatura.
+export function MinhaAssinatura({ assinatura, carregando, onVerificar, onCancelar, onGerenciarStripe, comLinkDosPlanos = false }) {
     const { t, idioma } = useIdioma()
     const [confirmando, setConfirmando] = useState(false)
     const [ocupado, setOcupado] = useState(null)
@@ -154,6 +158,11 @@ export function MinhaAssinatura({ assinatura, carregando, onVerificar, onCancela
                     {desistindo ? t('assinatura.minha.desistir') : t('assinatura.cancelar')}
                 </button>
             ))}
+            {comLinkDosPlanos && (
+                <Link to="/assinatura" className="btn btn--primary btn--block assinatura-card__cta">
+                    {['trial', 'expirada', 'cancelada'].includes(status) ? t('assinatura.minha.verPlanos') : t('assinatura.minha.verAssinatura')}
+                </Link>
+            )}
         </section>
     )
 }

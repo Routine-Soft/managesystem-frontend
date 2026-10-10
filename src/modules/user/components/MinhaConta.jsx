@@ -1,110 +1,105 @@
 import { useState } from 'react'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useIdioma } from '@/i18n/useIdioma'
-import IdiomaToggle from '@/components/IdiomaToggle/IdiomaToggle'
-import SeletorPais from '@/components/SeletorPais/SeletorPais'
-import { atualizarMe, alterarMinhaSenha } from '../user.api'
+import { formatarData } from '@/i18n/formatar'
+import { nomeDoPais } from '@/i18n/paises'
+import { useAssinatura } from '@/modules/assinatura/assinatura.hooks'
+import MinhaAssinatura from '@/modules/assinatura/components/MinhaAssinatura'
+import { useMinhaConta } from '../user.hooks'
+import EditarMinhaContaModal from './EditarMinhaContaModal'
+import AlterarSenhaModal from './AlterarSenhaModal'
+import './minha-conta.css'
 
-function Mensagem({ msg }) {
-    if (!msg) return null
-    return <p className={`alert alert--${msg.tipo}`} role={msg.tipo === 'error' ? 'alert' : 'status'}>{msg.texto}</p>
+function iniciais(nome) {
+    return String(nome ?? '').split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0].toUpperCase()).join('')
 }
 
+// Só o dono da conta (admin) paga e cancela a assinatura.
+function AssinaturaDaConta() {
+    const { assinatura, loading, irParaPortal, cancelarCartao, verificarPagamento } = useAssinatura()
+    return <MinhaAssinatura assinatura={assinatura} carregando={loading} onVerificar={verificarPagamento} onCancelar={cancelarCartao} onGerenciarStripe={irParaPortal} comLinkDosPlanos />
+}
+
+// Minha conta (modelo do SoftwareClinic): cartão do perfil com tudo à mostra; editar e trocar senha em modais.
 export function MinhaConta() {
     const { user, atualizarUsuarioLogado } = useAuthContext()
-    const { t } = useIdioma()
-    const [form, setForm] = useState({ nomeCompleto: user?.nomeCompleto ?? '', email: user?.email ?? '', telefone: user?.telefone ?? '', nomeEmpresa: user?.nomeEmpresa ?? '', pais: user?.pais ?? 'BR' })
-    const [senha, setSenha] = useState({ currentPassword: '', newPassword: '' })
-    const [salvando, setSalvando] = useState(null)
-    const [msgDados, setMsgDados] = useState(null)
-    const [msgSenha, setMsgSenha] = useState(null)
+    const { t, idioma } = useIdioma()
+    const { perfil, loading, erro, sucesso, salvarPerfil, alterarSenha } = useMinhaConta(atualizarUsuarioLogado)
+    const [modal, setModal] = useState(null)
+
     const ehAdmin = ['admin', 'super_admin'].includes(user?.role)
-
-    async function salvarDados(e) {
-        e.preventDefault()
-        setMsgDados(null)
-        setSalvando('dados')
-        try {
-            const r = await atualizarMe(ehAdmin ? form : { ...form, nomeEmpresa: undefined, pais: undefined })
-            atualizarUsuarioLogado(r.data)
-            setMsgDados({ tipo: 'success', texto: r.message })
-        } catch (err) {
-            setMsgDados({ tipo: 'error', texto: err.message })
-        } finally {
-            setSalvando(null)
-        }
-    }
-
-    async function salvarSenha(e) {
-        e.preventDefault()
-        setMsgSenha(null)
-        setSalvando('senha')
-        try {
-            const r = await alterarMinhaSenha(senha)
-            setSenha({ currentPassword: '', newPassword: '' })
-            setMsgSenha({ tipo: 'success', texto: r.message })
-        } catch (err) {
-            setMsgSenha({ tipo: 'error', texto: err.message })
-        } finally {
-            setSalvando(null)
-        }
-    }
-
-    function trocarIdioma(idioma) {
-        atualizarMe({ idioma }).then(() => atualizarUsuarioLogado({ idioma })).catch(() => null)
-    }
-
-    const campo = (nome) => ({ value: form[nome], onChange: (e) => setForm({ ...form, [nome]: e.target.value }) })
+    const mostraAssinatura = user?.role === 'admin'
 
     return (
-        <div className="page page--narrow">
+        <div className="page">
             <header className="page-header">
                 <div>
                     <h1 className="page-title">{t('conta.minhaConta')}</h1>
-                    <p className="page-subtitle">{t('conta.minhaContaSub')}</p>
+                    <p className="page-subtitle">{mostraAssinatura ? t('conta.minhaContaSubAdmin') : t('conta.minhaContaSub')}</p>
                 </div>
             </header>
 
-            <form className="card bloco" style={{ '--i': 0 }} onSubmit={salvarDados}>
-                <div className="bloco__cabecalho"><h2 className="bloco__titulo">{t('conta.dados')}</h2></div>
-                <div className="form-grid">
-                    <div className="field"><label className="field__label" htmlFor="mc-nome">{t('conta.nome')}</label><input id="mc-nome" className="input" required {...campo('nomeCompleto')} /></div>
-                    <div className="field"><label className="field__label" htmlFor="mc-email">{t('conta.email')}</label><input id="mc-email" className="input" type="email" required {...campo('email')} /></div>
-                    <div className="field"><label className="field__label" htmlFor="mc-tel">{t('conta.telefone')}</label><input id="mc-tel" className="input" type="tel" {...campo('telefone')} /></div>
-                    {ehAdmin && <div className="field"><label className="field__label" htmlFor="mc-emp">{t('conta.empresa')}</label><input id="mc-emp" className="input" required {...campo('nomeEmpresa')} /></div>}
-                    {ehAdmin && (
-                        <div className="field">
-                            <label className="field__label" htmlFor="mc-pais">{t('auth.pais')}</label>
-                            <SeletorPais id="mc-pais" value={form.pais} onChange={(pais) => setForm({ ...form, pais })} />
-                            <span className="field__hint">{t('auth.paisDica')}</span>
-                        </div>
-                    )}
-                    <div className="field field--full">
-                        <span className="field__label">{t('conta.idioma')}</span>
-                        <div><IdiomaToggle onTrocar={trocarIdioma} /></div>
-                    </div>
-                </div>
-                <Mensagem msg={msgDados} />
-                <div className="form-actions">
-                    <button type="submit" className={`btn btn--primary${salvando === 'dados' ? ' btn--loading' : ''}`} disabled={!!salvando}>
-                        {salvando === 'dados' ? t('comum.salvando') : t('comum.salvarAlteracoes')}
-                    </button>
-                </div>
-            </form>
+            {erro && !modal && <p className="alert alert--error" role="alert">{erro.message}</p>}
+            {sucesso && <p className="alert alert--success" role="status">{sucesso}</p>}
 
-            <form className="card bloco" style={{ '--i': 1, marginTop: 16 }} onSubmit={salvarSenha}>
-                <div className="bloco__cabecalho"><h2 className="bloco__titulo">{t('conta.senha')}</h2></div>
-                <div className="form-grid">
-                    <div className="field"><label className="field__label" htmlFor="mc-atual">{t('conta.senhaAtual')}</label><input id="mc-atual" className="input" type="password" autoComplete="current-password" required value={senha.currentPassword} onChange={(e) => setSenha({ ...senha, currentPassword: e.target.value })} /></div>
-                    <div className="field"><label className="field__label" htmlFor="mc-nova">{t('conta.novaSenha')}</label><input id="mc-nova" className="input" type="password" autoComplete="new-password" minLength={6} required value={senha.newPassword} onChange={(e) => setSenha({ ...senha, newPassword: e.target.value })} /><span className="field__hint">{t('auth.senhaDica')}</span></div>
-                </div>
-                <Mensagem msg={msgSenha} />
-                <div className="form-actions">
-                    <button type="submit" className={`btn btn--primary${salvando === 'senha' ? ' btn--loading' : ''}`} disabled={!!salvando}>
-                        {salvando === 'senha' ? t('comum.salvando') : t('conta.alterarSenha')}
-                    </button>
-                </div>
-            </form>
+            <div className={`conta-grid${mostraAssinatura ? '' : ' conta-grid--single'}`}>
+                {loading ? (
+                    <section className="card conta-perfil" aria-busy="true">
+                        <div className="conta-perfil__head">
+                            <div className="skeleton conta-perfil__avatar-skeleton" />
+                            <div className="conta-perfil__quem">
+                                <div className="skeleton skeleton--line" style={{ width: '60%', height: 20 }} />
+                                <div className="skeleton skeleton--line" style={{ width: '80%' }} />
+                            </div>
+                        </div>
+                        <div className="skeleton skeleton--line" style={{ width: '100%', height: 70 }} />
+                    </section>
+                ) : perfil && (
+                    <section className="card conta-perfil">
+                        <div className="conta-perfil__head">
+                            <div className="avatar avatar--lg" aria-hidden="true">{iniciais(perfil.nomeCompleto)}</div>
+                            <div className="conta-perfil__quem">
+                                <h2 className="conta-perfil__nome">{perfil.nomeCompleto}</h2>
+                                <p className="conta-perfil__email">{perfil.email}</p>
+                                <span className={`badge badge--${perfil.role}`}>{t(`comum.papel.${perfil.role}`)}</span>
+                            </div>
+                        </div>
+
+                        <dl className="conta-detalhes">
+                            <div>
+                                <dt>{t('conta.telefone')}</dt>
+                                <dd>{perfil.telefone || '—'}</dd>
+                            </div>
+                            <div>
+                                <dt>{t('conta.membroDesde')}</dt>
+                                <dd>{formatarData(perfil.createdAt, idioma)}</dd>
+                            </div>
+                            <div>
+                                <dt>{t('conta.empresa')}</dt>
+                                <dd>{perfil.nomeEmpresa || '—'}</dd>
+                            </div>
+                            <div>
+                                <dt>{t('auth.pais')}</dt>
+                                <dd>{nomeDoPais(perfil.pais ?? 'BR', idioma)}</dd>
+                            </div>
+                            <div>
+                                <dt>{t('conta.idiomaCurto')}</dt>
+                                <dd>{perfil.idioma === 'en' ? 'English' : 'Português'}</dd>
+                            </div>
+                        </dl>
+
+                        <div className="conta-perfil__acoes">
+                            <button type="button" className="btn btn--primary" onClick={() => setModal('dados')}>{t('conta.editarDados')}</button>
+                            <button type="button" className="btn btn--ghost" onClick={() => setModal('senha')}>{t('conta.alterarSenha')}</button>
+                        </div>
+                    </section>
+                )}
+
+                {mostraAssinatura && <AssinaturaDaConta />}
+            </div>
+
+            {modal === 'dados' && perfil && <EditarMinhaContaModal perfil={perfil} ehAdmin={ehAdmin} erro={erro} onSave={salvarPerfil} onClose={() => setModal(null)} />}
+            {modal === 'senha' && <AlterarSenhaModal erro={erro} onSave={alterarSenha} onClose={() => setModal(null)} />}
         </div>
     )
 }
