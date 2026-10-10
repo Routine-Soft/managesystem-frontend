@@ -736,3 +736,74 @@ strong[data-tom='danger'], dd[data-tom='danger'] { color: var(--danger); }
   font-size: 0.74rem;
   color: var(--text-subtle, var(--text-muted));
 }
+
+/* Onde está hospedado (AWS, OVHcloud, Hostinger...) */
+.servidor-card__nome .servidor-card__provedor {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  margin-top: 2px;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.servidor-card__provedor svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+
+/* Mensalidade do cliente (itens e total) e o seu custo no provedor */
+.servidor-card__financeiro {
+  display: grid;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+  font-size: 0.82rem;
+}
+
+.servidor-card__mensalidade {
+  display: grid;
+  gap: 4px;
+}
+
+.servidor-card__valor {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+  color: var(--text-muted);
+}
+
+.servidor-card__valor span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.servidor-card__valor strong {
+  flex: none;
+  color: var(--success);
+}
+
+.servidor-card__valor--custo strong {
+  color: var(--text);
+}
+
+.servidor-card__itens {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0 0 0 10px;
+  border-left: 2px solid var(--border);
+  list-style: none;
+  font-size: 0.76rem;
+  color: var(--text-subtle, var(--text-muted));
+}
+
+.servidor-card__itens li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}

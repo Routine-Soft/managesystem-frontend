@@ -79,7 +79,7 @@ export function VisaoGeral() {
                 </div>
             ) : (
                 <div className="servidores-grade">
-                    {servidores.map((s, i) => <ServidorCard key={s._id} servidor={s} indice={i} agora={agora} />)}
+                    {servidores.map((s, i) => <ServidorCard key={s._id} servidor={s} indice={i} agora={agora} moedaPadrao={dados.moedaPadrao} />)}
                 </div>
             )}
 
