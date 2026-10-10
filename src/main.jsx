@@ -6,6 +6,9 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { ThemeProvider } from '@/context/ThemeContext'
 import IdiomaProvider from '@/i18n/IdiomaProvider'
+import { registrarApp } from '@/utils/instalarApp'
+
+registrarApp()
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>

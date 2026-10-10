@@ -6,6 +6,7 @@ import IdiomaToggle from '@/components/IdiomaToggle/IdiomaToggle'
 import { atualizarMe } from '@/modules/user/user.api'
 import * as I from '@/components/Icones/Icones'
 import Marca from './Marca'
+import BotaoInstalar from './BotaoInstalar'
 import './Sidebar.css'
 
 const TODOS = ['super_admin', 'admin', 'membro']
@@ -84,6 +85,8 @@ export function Sidebar({ aberto = false, onFechar }) {
             </nav>
 
             <div className="sidebar__rodape">
+                <BotaoInstalar />
+
                 <div className="sidebar__usuario">
                     <span className="sidebar__avatar" aria-hidden="true">{iniciais(user?.nomeCompleto)}</span>
                     <span className="sidebar__usuario-dados">
