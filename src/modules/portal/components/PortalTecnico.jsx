@@ -5,6 +5,8 @@ import { useAgora } from '@/modules/servidor/servidor.hooks'
 import CardRam from '@/modules/servidor/components/painel/CardRam'
 import CardCpuDisco from '@/modules/servidor/components/painel/CardCpuDisco'
 import CardRequisicoes from '@/modules/servidor/components/painel/CardRequisicoes'
+import CardMapa from '@/modules/servidor/components/painel/CardMapa'
+import CardContainers from '@/modules/servidor/components/painel/CardContainers'
 import CardOcorrencias from '@/modules/servidor/components/painel/CardOcorrencias'
 import CardDependencias from '@/modules/servidor/components/painel/CardDependencias'
 import CardSistema from '@/modules/servidor/components/painel/CardSistema'
@@ -29,6 +31,7 @@ function Esqueleto() {
 
 // Os mesmos cartões do painel do programador, só para ver (sem ações nem custo do servidor).
 function DetalhesDoServidor({ servidor, mostrarNome }) {
+    const { t } = useIdioma()
     const [periodo, setPeriodo] = useState('24h')
     const { dados, erro } = usePainelDoServidorNoPortal(servidor._id, periodo)
     const agora = useAgora(5000)
@@ -42,14 +45,22 @@ function DetalhesDoServidor({ servidor, mostrarNome }) {
             ) : !s ? <Esqueleto /> : (
                 <div className="painel-grade">
                     <div className="painel-coluna">
-                        <CardRam servidor={s} serie={dados.serie} picoRam24h={dados.picoRam24h} periodo={periodo} setPeriodo={setPeriodo} />
-                        <CardCpuDisco servidor={s} />
+                        {/* Sistema em container: só o container dele (nunca os outros da máquina). */}
+                        {s.containerAtual && !s.agente?.ultimoContato ? (
+                            <CardContainers servidor={{ containers: [s.containerAtual] }} agora={agora} titulo={t('servidor.containers.doServidor')} />
+                        ) : (
+                            <>
+                                <CardRam servidor={s} serie={dados.serie} picoRam24h={dados.picoRam24h} periodo={periodo} setPeriodo={setPeriodo} />
+                                <CardCpuDisco servidor={s} />
+                            </>
+                        )}
+                        <CardMapa paises={dados.paises} periodo={periodo} />
                         <CardRequisicoes serie={dados.serie} periodo={periodo} />
                         <CardOcorrencias incidentes={dados.incidentes} agora={agora} />
                     </div>
                     <div className="painel-coluna">
                         <CardDependencias servidor={s} agora={agora} />
-                        <CardSistema servidor={s} />
+                        <CardSistema servidor={s} mostrarAcoes={false} />
                         <CardLogs servidor={s} />
                         <CardHistorico eventos={dados.eventos} />
                     </div>

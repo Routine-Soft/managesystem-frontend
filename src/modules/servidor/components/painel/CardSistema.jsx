@@ -49,7 +49,7 @@ function AcoesDoServidor({ servidor: s, agora, onPedido }) {
     )
 }
 
-export function CardSistema({ servidor: s, agora, onPedido }) {
+export function CardSistema({ servidor: s, agora, onPedido, mostrarAcoes = true }) {
     const { t, idioma } = useIdioma()
     const [aberto, setAberto] = useState(false)
     const lista = s.pacotes?.lista ?? []
@@ -86,7 +86,7 @@ export function CardSistema({ servidor: s, agora, onPedido }) {
                         <li><span>{t('servidor.so.reinicio')}</span><strong className="mono" data-tom={s.pacotes.reinicioNecessario ? 'warning' : 'success'}>{s.pacotes.reinicioNecessario ? t('comum.sim') : t('comum.nao')}</strong></li>
                     </ul>
 
-                    <AcoesDoServidor servidor={s} agora={agora} onPedido={onPedido} />
+                    {mostrarAcoes && <AcoesDoServidor servidor={s} agora={agora} onPedido={onPedido} />}
 
                     {lista.length > 0 && (
                         <details className="pacotes" open={aberto} onToggle={(e) => setAberto(e.currentTarget.open)}>
