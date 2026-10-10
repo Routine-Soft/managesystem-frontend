@@ -14,6 +14,7 @@ import CardRam from './painel/CardRam'
 import CardCpuDisco from './painel/CardCpuDisco'
 import CardContainers from './painel/CardContainers'
 import CardRequisicoes from './painel/CardRequisicoes'
+import CardMapa from './painel/CardMapa'
 import CardDominioSsl from './painel/CardDominioSsl'
 import CardDependencias from './painel/CardDependencias'
 import CardSistema from './painel/CardSistema'
@@ -122,6 +123,7 @@ export function ServidorPainel() {
                                 </>
                             )}
                             <CardRequisicoes serie={dados.serie} periodo={periodo} />
+                            <CardMapa paises={dados.paises} periodo={periodo} />
                             <CardOcorrencias incidentes={dados.incidentes} agora={agora} />
                         </div>
                         <div className="painel-coluna">

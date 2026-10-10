@@ -213,3 +213,55 @@
     gap: 2px;
   }
 }
+
+/* ---------- Mapa do mundo ---------- */
+.mapa {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.mapa svg {
+  display: block;
+}
+
+.mapa__pais {
+  fill: var(--surface-2);
+  stroke: var(--surface);
+  stroke-width: 0.6;
+  transition: fill 0.2s var(--ease), opacity 0.2s var(--ease);
+}
+
+.mapa__pais--com {
+  cursor: pointer;
+}
+
+.mapa__pais.is-ativo {
+  stroke: var(--text);
+  stroke-width: 1.2;
+}
+
+.mapa__dica {
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.mapa__legenda {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.mapa__legenda i {
+  width: 18px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.mapa__legenda span {
+  margin: 0 4px;
+}

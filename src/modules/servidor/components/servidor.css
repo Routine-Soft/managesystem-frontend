@@ -858,3 +858,59 @@ strong[data-tom='danger'], dd[data-tom='danger'] { color: var(--danger); }
 .comando__opcao {
   margin-bottom: 8px;
 }
+
+/* Lista de países (número e porcentagem) */
+.paises {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+}
+
+.paises li {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(40px, 1fr) auto 52px;
+  gap: 10px;
+  align-items: center;
+  animation: fadeInUp 0.4s var(--ease) backwards;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+
+.paises__nome {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.paises__barra {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+
+.paises__barra i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.paises__pct {
+  text-align: right;
+  color: var(--text-muted);
+}
+
+/* Celular: barra mais curta para o nome do país caber */
+@media (max-width: 480px) {
+  .paises li {
+    grid-template-columns: minmax(0, 1fr) 36px auto 46px;
+    gap: 8px;
+  }
+}
