@@ -12,6 +12,7 @@ import ComandoInstalacao from './ComandoInstalacao'
 import CardStatus from './painel/CardStatus'
 import CardRam from './painel/CardRam'
 import CardCpuDisco from './painel/CardCpuDisco'
+import CardContainers from './painel/CardContainers'
 import CardRequisicoes from './painel/CardRequisicoes'
 import CardDominioSsl from './painel/CardDominioSsl'
 import CardDependencias from './painel/CardDependencias'
@@ -112,6 +113,7 @@ export function ServidorPainel() {
                             <CardStatus servidor={s} disponibilidade={dados.disponibilidade} incidentes={dados.incidentes} agora={agora} />
                             <CardRam servidor={s} serie={dados.serie} picoRam24h={dados.picoRam24h} periodo={periodo} setPeriodo={setPeriodo} />
                             <CardCpuDisco servidor={s} />
+                            <CardContainers servidor={s} agora={agora} />
                             <CardRequisicoes serie={dados.serie} periodo={periodo} />
                             <CardOcorrencias incidentes={dados.incidentes} agora={agora} />
                         </div>

@@ -672,3 +672,43 @@ strong[data-tom='danger'], dd[data-tom='danger'] { color: var(--danger); }
 .custo-servidor strong {
   color: var(--text);
 }
+
+/* Containers da máquina */
+.containers {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.container-item {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  animation: fadeInUp 0.4s var(--ease) backwards;
+  animation-delay: calc(var(--i, 0) * 50ms);
+}
+
+.container-item__topo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.container-item__selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.container-item__numeros {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}

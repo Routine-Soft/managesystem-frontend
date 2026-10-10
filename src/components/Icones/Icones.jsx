@@ -12,6 +12,7 @@ export const IconeRelogioMais = () => <Icone><circle cx="11" cy="13" r="8" /><pa
 export const IconeChave = () => <Icone><circle cx="7.5" cy="15.5" r="5.5" /><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3" /></Icone>
 export const IconeTelefone = () => <Icone><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" /></Icone>
 export const IconeGrafico = () => <Icone><path d="M3 3v18h18" /><path d="M18 17V9M13 17V5M8 17v-3" /></Icone>
+export const IconeContainer = () => <Icone><path d="M21 8 12 3 3 8v8l9 5 9-5Z" /><path d="m3 8 9 5 9-5M12 13v8" /></Icone>
 export const IconeBusca = () => <Icone><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></Icone>
 export const IconeMais = () => <Icone><path d="M5 12h14M12 5v14" /></Icone>
 export const IconeLapis = () => <Icone><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /></Icone>
