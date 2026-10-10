@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useIdioma } from '@/i18n/useIdioma'
 import { formatarBytes, formatarRelativo, diasAte, formatarPct } from '@/i18n/formatar'
 import Medidor from '@/components/graficos/Medidor'
-import { IconeCadeado, IconeEscudo } from '@/components/Icones/Icones'
+import { IconeCadeado, IconeContainer, IconeEscudo } from '@/components/Icones/Icones'
 import { TOM_DO_STATUS, hostDaUrl, pct, resumoDoSistema, tomDoUso, tomDosDias } from '../servidor.utils'
 
 // Cartão do servidor na visão geral: status, uso de CPU/RAM/disco e o que pede atenção.
@@ -12,11 +12,18 @@ export function ServidorCard({ servidor: s, indice, agora }) {
     const disco = pct(s.atual?.discoUsado, s.atual?.discoTotal)
     const diasSsl = diasAte(s.ssl?.expiraEm, agora)
     const seguranca = (s.pendencias?.sistemaSeguranca ?? 0) + (s.pendencias?.dependenciasVulneraveis ?? 0)
-    const medidas = [
-        { rotulo: 'CPU', valor: s.atual?.cpu },
-        { rotulo: 'RAM', valor: ram },
-        { rotulo: t('servidor.disco.titulo'), valor: disco },
-    ]
+    // Sistema em container de outro servidor: RAM e CPU vêm do container (o disco é da máquina, fica no cartão dela).
+    const c = s.containerAtual
+    const medidas = c
+        ? [
+            { rotulo: 'CPU', valor: c.cpu },
+            { rotulo: 'RAM', valor: pct(c.ramUsada, c.ramLimite), usada: c.ramUsada, total: c.ramLimite },
+        ]
+        : [
+            { rotulo: 'CPU', valor: s.atual?.cpu },
+            { rotulo: 'RAM', valor: ram, usada: s.atual?.ramUsada, total: s.atual?.ramTotal },
+            { rotulo: t('servidor.disco.titulo'), valor: disco },
+        ]
 
     return (
         <Link to={`/servidores/${s._id}`} className="card servidor-card" style={{ '--i': indice }} data-status={s.status}>
@@ -38,9 +45,23 @@ export function ServidorCard({ servidor: s, indice, agora }) {
                             <span>{m.rotulo}</span>
                             <Medidor pct={m.valor} tom={tomDoUso(m.valor)} rotulo={`${m.rotulo} ${formatarPct(m.valor, idioma)}`} />
                             <strong className="mono">{formatarPct(m.valor, idioma)}</strong>
+                            {m.total ? (
+                                <small className="servidor-card__detalhe mono">
+                                    {t('servidor.containers.memoria', { usada: formatarBytes(m.usada, idioma, 0), limite: formatarBytes(m.total, idioma, 0) })}
+                                </small>
+                            ) : null}
                         </li>
                     ))}
                 </ul>
+            )}
+
+            {c && (
+                <p className="servidor-card__container texto-pequeno">
+                    <IconeContainer />
+                    <span>
+                        {c.estado === 'ausente' ? t('servidor.containers.ausente') : t('servidor.containers.emHost', { nome: c.nome, host: c.host })}
+                    </span>
+                </p>
             )}
 
             <footer className="servidor-card__rodape">
@@ -48,7 +69,7 @@ export function ServidorCard({ servidor: s, indice, agora }) {
                     <span className={`badge badge--${tomDosDias(diasSsl)}`}><IconeCadeado />SSL {t('servidor.dominioSsl.dias', { dias: diasSsl })}</span>
                 )}
                 {seguranca > 0 && <span className="badge badge--danger"><IconeEscudo />{t('servidor.deps.vulneraveis', { n: seguranca })}</span>}
-                <span className="servidor-card__quando">{s.agente?.ultimoContato ? formatarRelativo(s.agente.ultimoContato, idioma, agora) : t('servidor.semContato')}</span>
+                <span className="servidor-card__quando">{s.agente?.ultimoContato ? formatarRelativo(s.agente.ultimoContato, idioma, agora) : c?.em ? formatarRelativo(c.em, idioma, agora) : t('servidor.semContato')}</span>
             </footer>
         </Link>
     )

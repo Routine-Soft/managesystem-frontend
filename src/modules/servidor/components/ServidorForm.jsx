@@ -3,7 +3,7 @@ import { useIdioma } from '@/i18n/useIdioma'
 const MOEDAS = ['USD', 'BRL', 'EUR']
 
 // Campos do servidor (usados para adicionar e editar).
-export function ServidorForm({ form, setForm }) {
+export function ServidorForm({ form, setForm, hosts = [] }) {
     const { t } = useIdioma()
     const campo = (nome) => ({ value: form[nome] ?? '', onChange: (e) => setForm({ ...form, [nome]: e.target.value }) })
     const custo = (nome) => ({ value: form.custo?.[nome] ?? '', onChange: (e) => setForm({ ...form, custo: { ...form.custo, [nome]: e.target.value } }) })
@@ -37,6 +37,28 @@ export function ServidorForm({ form, setForm }) {
                 </div>
                 <span className="field__hint">{t('servidor.form.custoDica')}</span>
             </div>
+            {hosts.length > 0 && (
+                <div className="field">
+                    <label className="field__label" htmlFor="srv-container">{t('servidor.form.container')}</label>
+                    <select
+                        id="srv-container"
+                        className="input"
+                        value={form.container?.servidorId ? `${form.container.servidorId}|${form.container.nome}` : ''}
+                        onChange={(e) => {
+                            const [servidorId, nome] = e.target.value ? e.target.value.split('|') : [null, null]
+                            setForm({ ...form, container: { servidorId, nome } })
+                        }}
+                    >
+                        <option value="">{t('servidor.form.containerNao')}</option>
+                        {hosts.map((h) => (
+                            <optgroup key={h._id} label={h.nome}>
+                                {h.containers.map((c) => <option key={c.nome} value={`${h._id}|${c.nome}`}>{`${c.nome} (${h.nome})`}</option>)}
+                            </optgroup>
+                        ))}
+                    </select>
+                    <span className="field__hint">{t('servidor.form.containerDica')}</span>
+                </div>
+            )}
         </>
     )
 }

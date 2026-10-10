@@ -6,6 +6,7 @@ import { pct, tomDoUso } from '../../servidor.utils'
 
 // Situação do container em uma palavra: problema de saúde pesa mais que "rodando".
 function situacao(c) {
+    if (c.estado === 'ausente') return { chave: 'ausente', tom: 'danger' }
     if (c.estado === 'restarting') return { chave: 'reiniciando', tom: 'warning' }
     if (c.estado !== 'running') return { chave: 'parado', tom: 'danger' }
     if (c.saude === 'unhealthy') return { chave: 'doente', tom: 'danger' }
@@ -13,7 +14,7 @@ function situacao(c) {
 }
 
 // Memória e CPU de cada sistema que roda em container nesta máquina (só aparece quando há Docker).
-export function CardContainers({ servidor: s, agora }) {
+export function CardContainers({ servidor: s, agora, titulo }) {
     const { t, idioma } = useIdioma()
     const lista = s.containers ?? []
     if (!lista.length) return null
@@ -21,10 +22,10 @@ export function CardContainers({ servidor: s, agora }) {
     return (
         <section className="card bloco" style={{ '--i': 3 }}>
             <div className="bloco__cabecalho">
-                <h2 className="bloco__titulo"><IconeContainer />{t('servidor.containers.titulo')}</h2>
-                <span className="badge badge--neutro">{t('servidor.containers.total', { n: lista.length })}</span>
+                <h2 className="bloco__titulo"><IconeContainer />{titulo ?? t('servidor.containers.titulo')}</h2>
+                {!titulo && <span className="badge badge--neutro">{t('servidor.containers.total', { n: lista.length })}</span>}
             </div>
-            <p className="texto-pequeno">{t('servidor.containers.dica')}</p>
+            <p className="texto-pequeno">{lista[0]?.host ? t('servidor.containers.emHost', { nome: lista[0].nome, host: lista[0].host }) : t('servidor.containers.dica')}</p>
 
             <ul className="containers">
                 {lista.map((c, i) => {

@@ -3,13 +3,15 @@ import Modal from '@/components/Modal/Modal'
 import ModalForm from '@/components/Modal/ModalForm'
 import { useIdioma } from '@/i18n/useIdioma'
 import { criarServidor } from '../servidor.api'
+import { useServidoresComContainers } from '../servidor.hooks'
 import ServidorForm from './ServidorForm'
 import ComandoInstalacao from './ComandoInstalacao'
 
 // Dois passos: os dados do servidor e, depois, o comando para instalar o agente.
 export function NovoServidorModal({ onCriado, onClose }) {
     const { t } = useIdioma()
-    const [form, setForm] = useState({ nome: '', url: '', limiteLentidaoMs: 3000, custo: { valor: '', moeda: 'USD', provedor: '' } })
+    const [form, setForm] = useState({ nome: '', url: '', limiteLentidaoMs: 3000, custo: { valor: '', moeda: 'USD', provedor: '' }, container: { servidorId: null, nome: null } })
+    const hosts = useServidoresComContainers()
     const [erro, setErro] = useState(null)
     const [criado, setCriado] = useState(null)
 
@@ -37,7 +39,7 @@ export function NovoServidorModal({ onCriado, onClose }) {
                 </div>
             ) : (
                 <ModalForm erro={erro} onSubmit={salvar} fechar={fechar} submitLabel={t('servidor.form.criar')} loadingLabel={t('servidor.form.criando')}>
-                    <ServidorForm form={form} setForm={setForm} />
+                    <ServidorForm form={form} setForm={setForm} hosts={hosts} />
                 </ModalForm>
             )}
         </Modal>

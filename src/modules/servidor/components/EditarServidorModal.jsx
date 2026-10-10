@@ -3,6 +3,7 @@ import Modal from '@/components/Modal/Modal'
 import ModalForm from '@/components/Modal/ModalForm'
 import { useIdioma } from '@/i18n/useIdioma'
 import { atualizarServidor } from '../servidor.api'
+import { useServidoresComContainers } from '../servidor.hooks'
 import ServidorForm from './ServidorForm'
 
 export function EditarServidorModal({ servidor, onSalvo, onClose }) {
@@ -12,7 +13,9 @@ export function EditarServidorModal({ servidor, onSalvo, onClose }) {
         url: servidor.url ?? '',
         limiteLentidaoMs: servidor.limiteLentidaoMs ?? 3000,
         custo: { valor: servidor.custo?.valor ?? '', moeda: servidor.custo?.moeda ?? 'USD', provedor: servidor.custo?.provedor ?? '' },
+        container: { servidorId: servidor.container?.servidorId ?? null, nome: servidor.container?.nome ?? null },
     })
+    const hosts = useServidoresComContainers(servidor._id)
     const [erro, setErro] = useState(null)
 
     async function salvar() {
@@ -31,7 +34,7 @@ export function EditarServidorModal({ servidor, onSalvo, onClose }) {
         <Modal title={t('servidor.form.editarTitulo')} onClose={onClose}>
             {(fechar) => (
                 <ModalForm erro={erro} onSubmit={salvar} fechar={fechar} submitLabel={t('comum.salvarAlteracoes')}>
-                    <ServidorForm form={form} setForm={setForm} />
+                    <ServidorForm form={form} setForm={setForm} hosts={hosts} />
                 </ModalForm>
             )}
         </Modal>

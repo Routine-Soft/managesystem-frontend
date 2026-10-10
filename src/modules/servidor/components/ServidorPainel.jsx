@@ -111,9 +111,16 @@ export function ServidorPainel() {
                     <div className="painel-grade">
                         <div className="painel-coluna">
                             <CardStatus servidor={s} disponibilidade={dados.disponibilidade} incidentes={dados.incidentes} agora={agora} />
-                            <CardRam servidor={s} serie={dados.serie} picoRam24h={dados.picoRam24h} periodo={periodo} setPeriodo={setPeriodo} />
-                            <CardCpuDisco servidor={s} />
-                            <CardContainers servidor={s} agora={agora} />
+                            {/* Sistema em container de outro servidor (sem agente próprio): mostra o container no lugar de RAM/CPU/disco. */}
+                            {s.containerAtual && !s.agente?.ultimoContato ? (
+                                <CardContainers servidor={{ containers: [s.containerAtual] }} agora={agora} titulo={t('servidor.containers.doServidor')} />
+                            ) : (
+                                <>
+                                    <CardRam servidor={s} serie={dados.serie} picoRam24h={dados.picoRam24h} periodo={periodo} setPeriodo={setPeriodo} />
+                                    <CardCpuDisco servidor={s} />
+                                    <CardContainers servidor={s} agora={agora} />
+                                </>
+                            )}
                             <CardRequisicoes serie={dados.serie} periodo={periodo} />
                             <CardOcorrencias incidentes={dados.incidentes} agora={agora} />
                         </div>

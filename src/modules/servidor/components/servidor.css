@@ -712,3 +712,27 @@ strong[data-tom='danger'], dd[data-tom='danger'] { color: var(--danger); }
   gap: 12px;
   justify-content: space-between;
 }
+
+/* Cartão da visão geral: de qual container vêm a RAM e a CPU */
+.servidor-card__container {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.servidor-card__container svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--primary);
+}
+
+/* Uso em MB embaixo da barra da RAM (a porcentagem continua do lado) */
+.servidor-card__detalhe {
+  grid-column: 2 / -1;
+  margin-top: -6px;
+  font-size: 0.74rem;
+  color: var(--text-subtle, var(--text-muted));
+}

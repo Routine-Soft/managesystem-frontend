@@ -59,3 +59,20 @@ export function useAgora(intervaloMs = 5000) {
     }, [intervaloMs])
     return agora
 }
+
+// Servidores que têm containers (para ligar um sistema ao container dele). Busca uma vez ao abrir o formulário.
+export function useServidoresComContainers(excluirId = null) {
+    const [lista, setLista] = useState([])
+    useEffect(() => {
+        let ignore = false
+        api.buscarResumo()
+            .then((r) => {
+                if (!ignore) setLista((r.data?.servidores ?? []).filter((s) => s.containers?.length && s._id !== excluirId))
+            })
+            .catch(() => null)
+        return () => {
+            ignore = true
+        }
+    }, [excluirId])
+    return lista
+}
