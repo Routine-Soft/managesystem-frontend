@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useIdioma } from '@/i18n/useIdioma'
 import { sessaoDoPortal } from '@/services/portalClient'
+import { assinarInstalacao, ehAndroid, ehIOS, instalarApp, podeInstalar, rodandoComoApp } from '@/utils/instalarApp'
 import * as api from './portal.api'
 
 // Entrar no portal (login ou criação de senha): guarda a sessão e aplica o idioma do cliente.
@@ -83,4 +84,41 @@ export function usePainelDoServidorNoPortal(id, periodo) {
     }, [id, periodo])
 
     return { dados, erro }
+}
+
+const CHAVE_DISPENSADO = 'portalInstalarDispensado'
+
+function lerDispensado() {
+    try {
+        return localStorage.getItem(CHAVE_DISPENSADO) === '1'
+    } catch {
+        return false
+    }
+}
+
+// Instalar o portal como app. O botão aparece sempre (menos quando já está aberto pelo ícone):
+// se o navegador já liberou a janela de instalar, abre ela; senão mostra o passo a passo do aparelho
+// (o Chrome só libera depois de uns segundos de uso, e Safari/Firefox nunca liberam).
+export function useInstalarPortal() {
+    const disponivel = useSyncExternalStore(assinarInstalacao, podeInstalar, () => false)
+    const [dispensado, setDispensado] = useState(lerDispensado)
+    const [passoAPasso, setPassoAPasso] = useState(null)
+    const modo = rodandoComoApp() ? null : disponivel ? 'janela' : 'passos'
+    const plataforma = ehIOS() ? 'ios' : ehAndroid() ? 'android' : 'computador'
+
+    function instalar() {
+        if (modo === 'janela') instalarApp()
+        else setPassoAPasso(plataforma)
+    }
+
+    function dispensar() {
+        setDispensado(true)
+        try {
+            localStorage.setItem(CHAVE_DISPENSADO, '1')
+        } catch {
+            // storage indisponível: o aviso some só nesta visita
+        }
+    }
+
+    return { modo, instalar, dispensar, dispensado, passoAPasso, fecharPassoAPasso: () => setPassoAPasso(null) }
 }

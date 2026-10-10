@@ -45,3 +45,26 @@ export async function instalarApp() {
   const { outcome } = await pedido.userChoice
   return outcome === 'accepted'
 }
+
+// Já aberto pelo ícone instalado: não oferece instalar de novo.
+export function rodandoComoApp() {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia?.('(display-mode: standalone)').matches || window.navigator.standalone === true
+}
+
+// iPhone e iPad não têm a janela de instalar: lá é Compartilhar → "Adicionar à Tela de Início".
+// (iPad novo se apresenta como Mac, por isso o teste do toque.)
+export function ehIOS() {
+  if (typeof navigator === 'undefined') return false
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+}
+
+// Manifesto da área em uso: o app instalado pelo portal do cliente abre no portal, não no painel.
+export function usarManifesto(caminho) {
+  const link = document.querySelector('link[rel="manifest"]')
+  if (link && link.getAttribute('href') !== caminho) link.setAttribute('href', caminho)
+}
+
+export function ehAndroid() {
+  return typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)
+}

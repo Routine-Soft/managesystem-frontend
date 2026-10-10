@@ -416,3 +416,159 @@
   height: 18px;
   color: var(--primary);
 }
+
+/* Instalar o app: botão compacto na barra de cima e aviso no topo da página. */
+.portal-instalar-btn {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.portal-instalar-btn:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.portal-instalar-btn:focus-visible {
+  outline: 2px solid var(--primary-ring, var(--primary));
+  outline-offset: 2px;
+}
+
+.portal-instalar-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Celular: só o ícone, para caber ao lado dos outros botões. */
+@media (max-width: 480px) {
+  .portal-instalar-btn {
+    width: 34px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .portal-instalar-btn span {
+    display: none;
+  }
+}
+
+.portal-instalar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 12px 12px 14px;
+  border-color: var(--primary-soft);
+  background: linear-gradient(135deg, var(--primary-soft), transparent 70%), var(--surface);
+  animation: slideDown 0.4s var(--ease) backwards;
+}
+
+.portal-instalar__icone {
+  flex: none;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.portal-instalar__texto {
+  display: grid;
+  flex: 1;
+  gap: 2px;
+  min-width: 0;
+  font-size: 0.9rem;
+}
+
+.portal-instalar__texto span {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.portal-instalar .btn {
+  flex: none;
+}
+
+.portal-instalar__fechar {
+  flex: none;
+}
+
+/* Celular: ícone, texto e fechar na linha de cima; botão Instalar largo embaixo. */
+@media (max-width: 480px) {
+  .portal-instalar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .portal-instalar__fechar {
+    order: 2;
+  }
+
+  .portal-instalar .btn {
+    order: 3;
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+}
+
+/* Passo a passo do iPhone */
+.instalar-ios {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.instalar-ios li {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.instalar-ios__num {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  color: var(--on-primary);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.instalar-ios__icone {
+  display: inline-grid;
+  place-items: center;
+  vertical-align: middle;
+  width: 26px;
+  height: 26px;
+  margin-left: 2px;
+  border-radius: 8px;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.instalar-ios__icone svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* "A pagar": em destaque, logo depois dos cartões do servidor e do domínio. */
+.portal-apagar {
+  border-color: var(--primary-soft);
+  box-shadow: var(--shadow-md), 0 0 0 1px var(--primary-soft);
+}
+
+.portal-apagar .bloco__titulo svg {
+  color: var(--primary);
+}

@@ -131,8 +131,32 @@ function CartaoSite({ site: s, indice }) {
     )
 }
 
-function Faturas({ faturas, pagamento }) {
+function Fatura({ fatura: f, pagamento, abrindo, onPagar }) {
     const { t, idioma } = useIdioma()
+    return (
+        <li className="portal-fatura">
+            <div className="portal-fatura__info">
+                <strong className="mono">{formatarMoeda(f.total, f.moeda, idioma)}</strong>
+                <span className="texto-pequeno">{f.itens.map((i) => `${i.descricao} ${formatarMoeda(i.valor, f.moeda, idioma)}`).join(' + ')}</span>
+                <span className="texto-pequeno">
+                    {f.status === 'paga' && f.pagaEm ? t('portal.pagaEm', { data: formatarData(f.pagaEm, idioma) }) : t('portal.venceEm', { data: formatarData(f.vencimento, idioma, dataUTC) })}
+                </span>
+            </div>
+            <div className="portal-fatura__lado">
+                <span className={`badge badge--${tomDaFatura(f)}`}>{t(`contratante.faturas.status.${chaveDoStatusDaFatura(f)}`)}</span>
+                {onPagar && pagamento.disponivel && (
+                    <button type="button" className={`btn btn--primary btn--sm${abrindo === f._id ? ' btn--loading' : ''}`} disabled={!!abrindo} onClick={() => onPagar(f._id)}>
+                        {abrindo === f._id ? t('portal.abrindo') : t('portal.pagar')}
+                    </button>
+                )}
+            </div>
+        </li>
+    )
+}
+
+// Logo depois dos cartões: só o que está em aberto, para o cliente pagar sem precisar descer a página.
+function APagar({ faturas, pagamento }) {
+    const { t } = useIdioma()
     const [abrindo, setAbrindo] = useState(null)
     const [erro, setErro] = useState(null)
 
@@ -148,37 +172,32 @@ function Faturas({ faturas, pagamento }) {
         }
     }
 
+    if (!faturas.length) return null
+
+    return (
+        <section className="card portal-bloco portal-apagar" style={{ '--i': 2 }}>
+            <h2 className="bloco__titulo"><IconeCartao />{t('portal.aPagar')}</h2>
+            {erro && <p className="alert alert--error" role="alert">{erro.message}</p>}
+            <ul className="portal-faturas">
+                {faturas.map((f) => <Fatura key={f._id} fatura={f} pagamento={pagamento} abrindo={abrindo} onPagar={pagar} />)}
+            </ul>
+            <p className="texto-pequeno">{pagamento.disponivel ? t(pagamento.gateway === 'mercadopago' ? 'portal.pagaComMp' : 'portal.pagaComStripe') : t('portal.pagamentoIndisponivel')}</p>
+        </section>
+    )
+}
+
+// Lá embaixo: só o histórico do que já foi pago.
+function Historico({ faturas, pagamento }) {
+    const { t } = useIdioma()
     return (
         <section className="card portal-bloco" style={{ '--i': 1 }}>
             <h2 className="bloco__titulo">{t('portal.faturas')}</h2>
-            {erro && <p className="alert alert--error" role="alert">{erro.message}</p>}
             {faturas.length === 0 ? (
                 <p className="texto-suave">{t('portal.semFaturas')}</p>
             ) : (
                 <ul className="portal-faturas">
-                    {faturas.map((f) => (
-                        <li key={f._id} className="portal-fatura">
-                            <div className="portal-fatura__info">
-                                <strong className="mono">{formatarMoeda(f.total, f.moeda, idioma)}</strong>
-                                <span className="texto-pequeno">{f.itens.map((i) => `${i.descricao} ${formatarMoeda(i.valor, f.moeda, idioma)}`).join(' + ')}</span>
-                                <span className="texto-pequeno">
-                                    {f.status === 'paga' && f.pagaEm ? t('portal.pagaEm', { data: formatarData(f.pagaEm, idioma) }) : t('portal.venceEm', { data: formatarData(f.vencimento, idioma, dataUTC) })}
-                                </span>
-                            </div>
-                            <div className="portal-fatura__lado">
-                                <span className={`badge badge--${tomDaFatura(f)}`}>{t(`contratante.faturas.status.${chaveDoStatusDaFatura(f)}`)}</span>
-                                {f.status === 'aberta' && pagamento.disponivel && (
-                                    <button type="button" className={`btn btn--primary btn--sm${abrindo === f._id ? ' btn--loading' : ''}`} disabled={!!abrindo} onClick={() => pagar(f._id)}>
-                                        {abrindo === f._id ? t('portal.abrindo') : t('portal.pagar')}
-                                    </button>
-                                )}
-                            </div>
-                        </li>
-                    ))}
+                    {faturas.map((f) => <Fatura key={f._id} fatura={f} pagamento={pagamento} />)}
                 </ul>
-            )}
-            {faturas.some((f) => f.status === 'aberta') && (
-                <p className="texto-pequeno">{pagamento.disponivel ? t(pagamento.gateway === 'mercadopago' ? 'portal.pagaComMp' : 'portal.pagaComStripe') : t('portal.pagamentoIndisponivel')}</p>
             )}
         </section>
     )
@@ -246,13 +265,14 @@ export function PortalPainel() {
                     <div className="portal-grade">
                         {dados.servidores.map((s, i) => <CartaoServidor key={s._id} servidor={s} indice={i} />)}
                         {dados.sites.map((s, i) => <CartaoSite key={s._id} site={s} indice={i + dados.servidores.length} />)}
+                        <APagar faturas={dados.faturas.filter((f) => f.status === 'aberta')} pagamento={dados.pagamento} />
                     </div>
 
                     {/* Primeiro o resumo em linguagem simples; descendo, a parte técnica para quem quiser ver a fundo. */}
                     <PortalTecnico servidores={dados.servidores} />
 
                     <div className="portal-grade">
-                        <Faturas faturas={dados.faturas} pagamento={dados.pagamento} />
+                        <Historico faturas={dados.faturas.filter((f) => f.status === 'paga')} pagamento={dados.pagamento} />
                         <Telegram telegram={dados.telegram} onMudou={recarregar} />
                     </div>
 

@@ -5,6 +5,10 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
+    <script>
+      // Portal do cliente: o app instalado de lá abre no portal (o manifesto precisa estar certo já no carregamento).
+      if (location.hash.indexOf('#/portal') === 0) document.querySelector('link[rel="manifest"]').href = '/manifest-portal.webmanifest'
+    </script>
     <meta name="apple-mobile-web-app-title" content="ManageSystem" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b1120" />
