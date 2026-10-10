@@ -20,7 +20,7 @@ function progressoDoTeste(assinatura) {
 
 // Cartão "Minha assinatura" (mesmo modelo do SoftwareClinic): situação, plano, prazo do teste e as ações possíveis.
 // comLinkDosPlanos: usado em "Minha conta", leva para a página de assinatura.
-export function MinhaAssinatura({ assinatura, carregando, onVerificar, onCancelar, onGerenciarStripe, comLinkDosPlanos = false }) {
+export function MinhaAssinatura({ assinatura, carregando, onVerificar, onCancelar, onGerenciarStripe, onRefazer, comLinkDosPlanos = false }) {
     const { t, idioma } = useIdioma()
     const [confirmando, setConfirmando] = useState(false)
     const [ocupado, setOcupado] = useState(null)
@@ -126,6 +126,11 @@ export function MinhaAssinatura({ assinatura, carregando, onVerificar, onCancela
                     <button type="button" className={`btn btn--primary btn--block assinatura-card__cta${ocupado === 'verificar' ? ' btn--loading' : ''}`} disabled={!!ocupado} onClick={() => executar('verificar', onVerificar)}>
                         {ocupado === 'verificar' ? t('assinatura.minha.verificando') : t('assinatura.minha.jaPaguei')}
                     </button>
+                    {onRefazer && (
+                        <button type="button" className={`btn btn--ghost btn--block${ocupado === 'refazer' ? ' btn--loading' : ''}`} disabled={!!ocupado} onClick={() => executar('refazer', onRefazer)}>
+                            {ocupado === 'refazer' ? t('assinatura.pagina.redirecionando') : t('assinatura.pagina.refazer')}
+                        </button>
+                    )}
                 </div>
             )}
 
@@ -164,6 +169,42 @@ export function MinhaAssinatura({ assinatura, carregando, onVerificar, onCancela
                 </Link>
             )}
         </section>
+    )
+}
+
+// Desistir de um pagamento no cartão que ficou pendente (clicou em assinar e não concluiu): volta ao teste grátis.
+// Aparece no cartão do plano, como no SoftwareClinic.
+export function DesistirDoPagamento({ onDesistir }) {
+    const { t } = useIdioma()
+    const [confirmando, setConfirmando] = useState(false)
+    const [ocupado, setOcupado] = useState(false)
+    const [erro, setErro] = useState(null)
+
+    async function desistir() {
+        setErro(null)
+        setOcupado(true)
+        try {
+            await onDesistir()
+            setConfirmando(false)
+        } catch (e) {
+            setErro(e)
+        } finally {
+            setOcupado(false)
+        }
+    }
+
+    if (!confirmando) {
+        return <button type="button" className="assinatura-card__cancelar" onClick={() => setConfirmando(true)}>{t('assinatura.minha.desistir')}</button>
+    }
+    return (
+        <div className="assinatura-card__confirmar" role="alertdialog" aria-label={t('assinatura.minha.confirmarCancelamento')}>
+            <p>{t('assinatura.minha.confirmaDesistir')}</p>
+            {erro && <p className="alert alert--error" role="alert">{erro.message}</p>}
+            <div className="assinatura-card__acoes assinatura-card__acoes--linha">
+                <button type="button" className="btn btn--ghost btn--sm" disabled={ocupado} onClick={() => setConfirmando(false)}>{t('assinatura.minha.continuarAguardando')}</button>
+                <button type="button" className={`btn btn--danger btn--sm${ocupado ? ' btn--loading' : ''}`} disabled={ocupado} onClick={desistir}>{t('assinatura.minha.simDesistir')}</button>
+            </div>
+        </div>
     )
 }
 

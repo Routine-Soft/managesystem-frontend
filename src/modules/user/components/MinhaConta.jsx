@@ -16,8 +16,9 @@ function iniciais(nome) {
 
 // Só o dono da conta (admin) paga e cancela a assinatura.
 function AssinaturaDaConta() {
-    const { assinatura, loading, irParaPortal, cancelarCartao, verificarPagamento } = useAssinatura()
-    return <MinhaAssinatura assinatura={assinatura} carregando={loading} onVerificar={verificarPagamento} onCancelar={cancelarCartao} onGerenciarStripe={irParaPortal} comLinkDosPlanos />
+    const { assinatura, loading, irParaPortal, irParaCheckout, cancelarCartao, verificarPagamento } = useAssinatura()
+    const onRefazer = assinatura?.cobranca === 'recorrente' && assinatura?.planoId?._id ? () => irParaCheckout(assinatura.planoId._id) : undefined
+    return <MinhaAssinatura assinatura={assinatura} carregando={loading} onVerificar={verificarPagamento} onCancelar={cancelarCartao} onGerenciarStripe={irParaPortal} onRefazer={onRefazer} comLinkDosPlanos />
 }
 
 // Minha conta (modelo do SoftwareClinic): cartão do perfil com tudo à mostra; editar e trocar senha em modais.

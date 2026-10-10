@@ -4,7 +4,7 @@ import { formatarData, formatarMoeda } from '@/i18n/formatar'
 import { IconeCartao, IconeCheck, IconePix } from '@/components/Icones/Icones'
 import { useAssinatura } from '../assinatura.hooks'
 import { precoEmReais } from '../assinatura.utils'
-import MinhaAssinatura from './MinhaAssinatura'
+import MinhaAssinatura, { DesistirDoPagamento } from './MinhaAssinatura'
 import PixModal from './PixModal'
 import './assinaturas-planos.css'
 import './assinatura.css'
@@ -117,6 +117,7 @@ export function AssinaturaPage() {
                     onVerificar={verificarPagamento}
                     onCancelar={cancelarCartao}
                     onGerenciarStripe={irParaPortal}
+                    onRefazer={assinatura?.cobranca === 'recorrente' && assinatura?.planoId?._id ? () => irParaCheckout(assinatura.planoId._id) : undefined}
                 />
                 {!loading && <Pagamentos pagamentos={pagamentos} />}
             </div>
@@ -198,6 +199,8 @@ export function AssinaturaPage() {
                                         )}
                                     </div>
                                 )}
+
+                                {ehAtual && aguardandoCartao && assinatura?.cobranca === 'recorrente' && <DesistirDoPagamento onDesistir={cancelarCartao} />}
                             </article>
                         )
                     })}
