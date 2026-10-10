@@ -31,7 +31,34 @@ export function useClientes() {
     }, [versao])
 
     const recarregar = useCallback(() => setVersao((v) => v + 1), [])
-    return { clientes, resumo, planos, loading, erro, recarregar }
+
+    // Cada ação devolve true/false (o ModalForm só fecha quando deu certo) e mostra a mensagem do servidor.
+    const [erroAcao, setErroAcao] = useState(null)
+    const [sucesso, setSucesso] = useState(null)
+    async function executar(acao) {
+        setErroAcao(null)
+        setSucesso(null)
+        try {
+            const r = await acao()
+            setSucesso(r?.message ?? null)
+            recarregar()
+            return true
+        } catch (e) {
+            setErroAcao(e)
+            return false
+        }
+    }
+
+    return {
+        clientes, resumo, planos, loading, erro, erroAcao, sucesso, recarregar,
+        criar: (dados) => executar(() => api.criarCliente(dados)),
+        editar: (id, dados) => executar(() => api.editarCliente(id, dados)),
+        excluir: (id) => executar(() => api.excluirCliente(id)),
+        redefinirSenha: (id, novaSenha) => executar(() => api.redefinirSenhaCliente(id, novaSenha)),
+        trocarPlano: (id, planoId, ate) => executar(() => api.liberarCliente(id, planoId, ate)),
+        estenderTeste: (id, dias) => executar(() => api.estenderTeste(id, dias)),
+        definirBloqueio: (id, bloqueado) => executar(() => api.bloquearCliente(id, bloqueado)),
+    }
 }
 
 export function usePlanosAdmin() {

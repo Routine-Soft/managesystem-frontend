@@ -1,0 +1,252 @@
+.assinantes-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.assinantes-toolbar__contagem {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.assinante-pessoa {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-width: 200px;
+}
+
+.assinante-pessoa__avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  font-size: 0.8rem;
+  font-weight: 750;
+  letter-spacing: 0.03em;
+  color: var(--on-primary);
+  background: var(--gradient-primary);
+  border-radius: 50%;
+}
+
+.assinante-pessoa__dados {
+  display: grid;
+  min-width: 0;
+}
+
+.assinante-pessoa__nome {
+  font-weight: 650;
+}
+
+.assinante-pessoa__sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  overflow-wrap: break-word;
+}
+
+.assinante-contato {
+  display: grid;
+  gap: 2px;
+  min-width: 180px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  overflow-wrap: break-word;
+}
+
+.assinante-plano {
+  display: grid;
+  gap: 2px;
+}
+
+.assinante-plano__preco {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.assinante-situacao {
+  display: grid;
+  gap: 4px;
+}
+
+.badge-linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.assinante-situacao__ate {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.assinante-confirmar {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--danger);
+  white-space: nowrap;
+}
+
+/* ---------- Modal "Trocar plano" ---------- */
+
+.troca-plano__lista {
+  display: grid;
+  gap: 8px;
+}
+
+.troca-plano__opcao {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  cursor: pointer;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition:
+    border-color 0.2s var(--ease),
+    background-color 0.2s var(--ease);
+}
+
+.troca-plano__opcao:hover {
+  border-color: var(--primary-ring);
+}
+
+.troca-plano__opcao[data-selecionado] {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+}
+
+.troca-plano__nome {
+  flex: 1;
+  font-weight: 650;
+}
+
+.troca-plano__preco {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Ações por assinante: em duas linhas de três, a tabela cabe no card sem rolar para o lado. */
+.assinante-acoes {
+  display: inline-grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 6px 8px;
+  justify-content: end;
+}
+
+/* Link do WhatsApp no contato do assinante. */
+.assinante-whats {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  width: fit-content;
+  font-weight: 600;
+  color: var(--success);
+  text-decoration: none;
+}
+
+.assinante-whats:hover {
+  text-decoration: underline;
+}
+
+.assinante-whats svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Resumo de uso na linha do assinante. */
+.assinante-uso {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.assinante-uso strong {
+  color: var(--text);
+}
+
+.assinante-plano__pago {
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: var(--success);
+}
+
+/* ---------- Detalhes do assinante ---------- */
+
+.assinante-detalhes {
+  display: grid;
+  gap: 18px;
+}
+
+.assinante-detalhes__sub {
+  margin: -6px 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.assinante-detalhes section {
+  display: grid;
+  gap: 10px;
+}
+
+.assinante-detalhes__titulo {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.assinante-numeros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.assinante-numero {
+  --tom: var(--text);
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.assinante-numero[data-tom='info'] { --tom: var(--info); }
+.assinante-numero[data-tom='success'] { --tom: var(--success); }
+.assinante-numero[data-tom='danger'] { --tom: var(--danger); }
+
+.assinante-numero strong {
+  font-size: 1.3rem;
+  font-weight: 750;
+  color: var(--tom);
+  overflow-wrap: anywhere;
+}
+
+.assinante-numero span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.assinante-detalhes__vazio {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.assinante-pagamentos {
+  min-width: 420px;
+}
