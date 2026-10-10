@@ -2,19 +2,21 @@ import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useIdioma } from '@/i18n/useIdioma'
 import { IconeCheck, IconeRelogio } from '@/components/Icones/Icones'
-import { sincronizarStripe } from '../assinatura.api'
+import { sincronizarMercadoPago, sincronizarStripe } from '../assinatura.api'
 import './assinatura.css'
 
-// Volta do checkout do Stripe: confirma a assinatura na hora, sem esperar o aviso (webhook).
+// Volta do checkout (Stripe ou cartão do Mercado Pago): confirma a assinatura na hora, sem esperar o aviso (webhook).
 export function AssinaturaRetorno() {
     const { t } = useIdioma()
     const [params] = useSearchParams()
     const sessionId = params.get('session_id')
+    const doMercadoPago = params.has('mp') || params.has('preapproval_id')
     const [situacao, setSituacao] = useState('confirmando')
 
     useEffect(() => {
         let ignore = false
-        sincronizarStripe(sessionId)
+        const conferir = doMercadoPago ? sincronizarMercadoPago() : sincronizarStripe(sessionId)
+        conferir
             .then(({ data }) => {
                 if (ignore) return
                 window.dispatchEvent(new CustomEvent('assinatura:atualizada', { detail: data }))
@@ -24,7 +26,7 @@ export function AssinaturaRetorno() {
         return () => {
             ignore = true
         }
-    }, [sessionId])
+    }, [sessionId, doMercadoPago])
 
     return (
         <div className="page page--narrow">

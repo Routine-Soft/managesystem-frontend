@@ -45,9 +45,15 @@ export function useAssinatura({ comPagamentos = false } = {}) {
         window.dispatchEvent(new CustomEvent('assinatura:atualizada', { detail: nova }))
     }, [])
 
+    // Cartão: Mercado Pago no Brasil, Stripe fora (o backend diz qual está disponível em formasDePagamento).
     async function irParaCheckout(planoId) {
-        const { data } = await api.checkoutStripe(planoId)
+        const { data } = assinatura?.formasDePagamento?.cartaoMercadoPago ? await api.cartaoMercadoPago(planoId) : await api.checkoutStripe(planoId)
         window.location.href = data.url
+    }
+
+    async function cancelarCartao() {
+        const { data } = await api.cancelarCartaoMercadoPago()
+        aplicarAssinatura(data)
     }
 
     async function irParaPortal() {
@@ -55,5 +61,5 @@ export function useAssinatura({ comPagamentos = false } = {}) {
         window.location.href = data.url
     }
 
-    return { assinatura, planos, pagamentos, loading, erro, recarregar, aplicarAssinatura, irParaCheckout, irParaPortal }
+    return { assinatura, planos, pagamentos, loading, erro, recarregar, aplicarAssinatura, irParaCheckout, irParaPortal, cancelarCartao }
 }
