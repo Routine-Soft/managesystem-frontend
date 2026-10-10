@@ -134,7 +134,7 @@ export default {
             memoria: '{usada} de {limite}',
             semLimite: '{usada} (sem limite)',
             cpu: 'CPU {pct}',
-            desde: 'no ar desde {quando}',
+            desde: 'ligado {quando}',
             total: '{n} containers',
         },
         historico: {
@@ -318,7 +318,7 @@ export default {
             memoria: '{usada} of {limite}',
             semLimite: '{usada} (no limit)',
             cpu: 'CPU {pct}',
-            desde: 'up since {quando}',
+            desde: 'started {quando}',
             total: '{n} containers',
         },
         historico: {
