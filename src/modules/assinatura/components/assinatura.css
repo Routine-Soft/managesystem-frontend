@@ -367,72 +367,24 @@
   justify-content: flex-end;
 }
 
-/* ---------- ManageSystem: cartão do plano atual e pagamentos ---------- */
-
-.assinatura-atual {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  animation: fadeInUp 0.5s var(--ease) backwards;
-}
-
-.assinatura-atual__info {
-  display: grid;
-  gap: 2px;
-}
-
-.assinatura-atual__rotulo {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.assinatura-atual__plano {
-  font-size: 1.4rem;
-  letter-spacing: -0.02em;
-}
-
-.assinatura-atual__linha,
-.assinatura-atual__cobranca {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-.assinatura-atual__lado {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-}
+/* ---------- ManageSystem: histórico de pagamentos ao lado de "Minha assinatura" ---------- */
 
 .assinatura-pagamentos {
-  margin-top: 20px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  min-width: 0;
+  padding: 24px;
+  animation: fadeInUp 0.6s var(--ease) backwards;
+  animation-delay: 80ms;
 }
 
-.plano-opcao[data-atual] {
-  border-color: var(--primary);
-  box-shadow: var(--shadow-glow);
-}
-
-.plano-opcao__descricao {
+.assinatura-pagamentos__titulo {
   margin: 0;
-  color: var(--text-muted);
+  font-size: 1.05rem;
+  font-weight: 700;
 }
 
-.plano-opcao__lista svg {
-  flex: none;
-  width: 16px;
-  height: 16px;
-  color: var(--success);
-}
-
-.plano-opcao__dica {
-  font-size: 0.78rem;
-  color: var(--text-subtle);
-  text-align: center;
+.assinatura-pagamentos .texto-suave {
+  margin: 0;
 }

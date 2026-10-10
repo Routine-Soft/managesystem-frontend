@@ -51,6 +51,12 @@ export function useAssinatura({ comPagamentos = false } = {}) {
         window.location.href = data.url
     }
 
+    // "Já paguei — verificar agora": confere no gateway sem esperar o aviso (webhook).
+    async function verificarPagamento() {
+        const { data } = assinatura?.cobranca === 'recorrente' ? await api.sincronizarMercadoPago() : await api.sincronizarStripe()
+        aplicarAssinatura(data)
+    }
+
     async function cancelarCartao() {
         const { data } = await api.cancelarCartaoMercadoPago()
         aplicarAssinatura(data)
@@ -61,5 +67,5 @@ export function useAssinatura({ comPagamentos = false } = {}) {
         window.location.href = data.url
     }
 
-    return { assinatura, planos, pagamentos, loading, erro, recarregar, aplicarAssinatura, irParaCheckout, irParaPortal, cancelarCartao }
+    return { assinatura, planos, pagamentos, loading, erro, recarregar, aplicarAssinatura, irParaCheckout, irParaPortal, cancelarCartao, verificarPagamento }
 }

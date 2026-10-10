@@ -544,6 +544,11 @@ select.input {
   --badge-bg: var(--info-soft);
 }
 
+.badge--muted {
+  --badge-fg: var(--text-muted);
+  --badge-bg: var(--surface-2);
+}
+
 .badge--live::before {
   content: '';
   width: 6px;

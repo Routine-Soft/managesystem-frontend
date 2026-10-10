@@ -1,67 +1,102 @@
 import { useState } from 'react'
 import { useIdioma } from '@/i18n/useIdioma'
-import { diasAte, formatarData, formatarMoeda } from '@/i18n/formatar'
-import { IconeCartao, IconeCheck, IconePix, IconeAbrir } from '@/components/Icones/Icones'
+import { formatarData, formatarMoeda } from '@/i18n/formatar'
+import { IconeCartao, IconeCheck, IconePix } from '@/components/Icones/Icones'
 import { useAssinatura } from '../assinatura.hooks'
 import { precoEmReais } from '../assinatura.utils'
+import MinhaAssinatura from './MinhaAssinatura'
 import PixModal from './PixModal'
 import './assinaturas-planos.css'
 import './assinatura.css'
-import '@/components/ExcluirInline/ExcluirInline.css'
 
-const TOM_DO_STATUS = { trial: 'info', pendente: 'warning', ativa: 'success', inadimplente: 'danger', cancelada: 'warning', expirada: 'danger' }
-
-function LinhaDoStatus({ assinatura }) {
-    const { t, idioma } = useIdioma()
-    const ate = assinatura.acesso?.ate
-    const data = ate ? formatarData(ate, idioma) : null
-    switch (assinatura.status) {
-        case 'trial':
-        case 'pendente':
-            return data ? <>{t('assinatura.testeAte', { data })} · {t('assinatura.testeRestam', { dias: Math.max(diasAte(ate), 0) })}</> : null
-        case 'ativa':
-            if (['stripe', 'recorrente'].includes(assinatura.cobranca)) return assinatura.proximaCobranca ? t('assinatura.renovaEm', { data: formatarData(assinatura.proximaCobranca, idioma) }) : null
-            return data ? t('assinatura.acessoAte', { data }) : null
-        case 'cancelada':
-            return data ? t('assinatura.canceladaAte', { data }) : null
-        case 'inadimplente':
-            return data ? t('assinatura.atrasoAte', { data }) : null
-        default:
-            return assinatura.acesso?.motivo ?? null
-    }
+// Selo do plano atual conforme a situação da assinatura.
+const SELO_DO_PLANO_ATUAL = {
+    trial: 'info', ativa: 'success', pendente: 'warning', inadimplente: 'danger', cancelada: 'muted', expirada: 'muted',
 }
 
-function limites(plano, t) {
-    const itens = []
-    itens.push(plano.limiteServidores ? t('assinatura.limiteServidores', { n: plano.limiteServidores }) : t('assinatura.servidoresIlimitados'))
-    itens.push(plano.limiteSites ? t('assinatura.limiteSites', { n: plano.limiteSites }) : t('assinatura.sitesIlimitados'))
-    return itens
+// Grátis primeiro, depois os pagos do mais barato ao mais caro.
+function ordenarPlanos(planos) {
+    return [...planos].sort((a, b) => (a.tipo !== b.tipo ? (a.tipo === 'gratis' ? -1 : 1) : a.precoUSD - b.precoUSD))
+}
+
+function Beneficios({ plano, gateway, t }) {
+    const limite = (n, um, varios, ilimitado) => (n ? t(n === 1 ? um : varios, { n }) : t(ilimitado))
+    const itens = plano.tipo === 'gratis'
+        ? [t('assinatura.pagina.gratisItens.acesso', { dias: plano.duracaoDiasTrial ?? 15 }), t('assinatura.pagina.gratisItens.semCartao'), limite(plano.limiteServidores, 'assinatura.pagina.umServidor', 'assinatura.limiteServidores', 'assinatura.servidoresIlimitados'), limite(plano.limiteSites, 'assinatura.pagina.umSite', 'assinatura.limiteSites', 'assinatura.sitesIlimitados')]
+        : [
+            limite(plano.limiteServidores, 'assinatura.pagina.umServidor', 'assinatura.limiteServidores', 'assinatura.servidoresIlimitados'),
+            limite(plano.limiteSites, 'assinatura.pagina.umSite', 'assinatura.limiteSites', 'assinatura.sitesIlimitados'),
+            ...t('assinatura.incluido'),
+            ...(gateway === 'mercadopago' ? t('assinatura.pagina.pagamentoBrasil') : t('assinatura.pagina.pagamentoFora')),
+        ]
+    return (
+        <ul className="plano-opcao__lista">
+            {itens.map((item) => <li key={item}><IconeCheck />{item}</li>)}
+        </ul>
+    )
+}
+
+function Pagamentos({ pagamentos }) {
+    const { t, idioma } = useIdioma()
+    return (
+        <section className="card assinatura-pagamentos">
+            <h2 className="assinatura-pagamentos__titulo">{t('assinatura.pagamentos')}</h2>
+            {pagamentos.length === 0 ? (
+                <p className="texto-suave">{t('assinatura.semPagamentos')}</p>
+            ) : (
+                <div className="table-wrap">
+                    <table className="table">
+                        <tbody>
+                            {pagamentos.map((p) => (
+                                <tr key={p.id}>
+                                    <td className="nowrap">{formatarData(p.aprovadoEm, idioma)}</td>
+                                    <td>{p.plano ?? '—'}</td>
+                                    <td>{t(`assinatura.metodo.${p.metodo}`)}</td>
+                                    <td className="table__num">{formatarMoeda(p.valor, p.moeda, idioma)}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+        </section>
+    )
 }
 
 export function AssinaturaPage() {
     const { t, idioma } = useIdioma()
-    const { assinatura, planos, pagamentos, loading, erro, aplicarAssinatura, irParaCheckout, irParaPortal, cancelarCartao } = useAssinatura({ comPagamentos: true })
+    const { assinatura, planos, pagamentos, loading, erro, aplicarAssinatura, irParaCheckout, irParaPortal, cancelarCartao, verificarPagamento } = useAssinatura({ comPagamentos: true })
     const [abrindo, setAbrindo] = useState(null)
     const [erroAcao, setErroAcao] = useState(null)
-    const [pixDoPlano, setPixDoPlano] = useState(null)
+    const [pix, setPix] = useState(null)
 
-    const pagos = planos.filter((p) => p.tipo === 'pago')
     const formas = assinatura?.formasDePagamento ?? {}
-    const temCartaoAtivo = (assinatura?.cobranca === 'stripe' && ['ativa', 'inadimplente', 'cancelada'].includes(assinatura?.status) && !!assinatura?.stripeSubscriptionId)
-        || (assinatura?.cobranca === 'recorrente' && assinatura?.status === 'ativa')
-    const cartaoMpAtivo = assinatura?.cobranca === 'recorrente' && ['ativa', 'inadimplente'].includes(assinatura?.status)
-    const pixAtivo = assinatura?.status === 'ativa' && assinatura?.cobranca === 'pix'
-    const [confirmandoCancelar, setConfirmandoCancelar] = useState(false)
+    const brasil = formas.pais === 'BR'
+    const status = assinatura?.status
+    const ativa = status === 'ativa'
+    const ativaPorPix = ativa && assinatura?.cobranca === 'pix'
+    const ativaNoCartao = (ativa && ['recorrente', 'stripe'].includes(assinatura?.cobranca)) || (status === 'inadimplente' && assinatura?.cobranca === 'stripe')
+    const aguardandoCartao = status === 'pendente'
+    const listaDePlanos = ordenarPlanos(planos.filter((p) => p.ativo))
+    const semFormaDePagamento = !loading && !formas.cartao && !formas.cartaoMercadoPago && !formas.pix
 
-    async function executar(chave, acao) {
+    async function abrirCheckout(planoId) {
         setErroAcao(null)
-        setAbrindo(chave)
+        setAbrindo(planoId)
         try {
-            await acao()
+            await irParaCheckout(planoId)
         } catch (e) {
             setErroAcao(e)
             setAbrindo(null)
         }
+    }
+
+    function textoDoBotaoCartao(ehAtual) {
+        if (ativaPorPix) return ehAtual ? t('assinatura.passarCartao') : t('assinatura.pagina.indisponivel')
+        if (ativa) return ehAtual ? t('assinatura.planoAtual') : t('assinatura.pagina.indisponivel')
+        if (ehAtual && status === 'pendente') return t('assinatura.pagina.refazer')
+        if (ehAtual && status === 'inadimplente') return t('assinatura.pagina.regularizar')
+        return t('assinatura.assinarCartao')
     }
 
     return (
@@ -69,125 +104,107 @@ export function AssinaturaPage() {
             <header className="page-header">
                 <div>
                     <h1 className="page-title">{t('assinatura.titulo')}</h1>
-                    <p className="page-subtitle">{t('assinatura.subtitulo')}</p>
+                    <p className="page-subtitle">{t('assinatura.pagina.subtitulo')}</p>
                 </div>
             </header>
 
             {erro && <p className="alert alert--error" role="alert">{erro.message}</p>}
+
+            <div className="assinaturas__topo">
+                <MinhaAssinatura
+                    assinatura={assinatura}
+                    carregando={loading}
+                    onVerificar={verificarPagamento}
+                    onCancelar={cancelarCartao}
+                    onGerenciarStripe={irParaPortal}
+                />
+                {!loading && <Pagamentos pagamentos={pagamentos} />}
+            </div>
+
+            <h2 className="assinaturas__secao">{t('assinatura.pagina.planos')}</h2>
+
+            {ativaPorPix && (
+                <p className="alert alert--info" role="status">{t('assinatura.pagina.avisoPix', { data: formatarData(assinatura.proximaCobranca, idioma) })}</p>
+            )}
+            {ativaNoCartao && <p className="alert alert--info" role="status">{t('assinatura.pagina.avisoTrocar')}</p>}
+            {aguardandoCartao && <p className="alert alert--info" role="status">{t('assinatura.pagina.avisoPendente')}</p>}
+            {semFormaDePagamento && <p className="alert alert--warning">{t('assinatura.pagina.semPagamento')}</p>}
             {erroAcao && <p className="alert alert--error" role="alert">{erroAcao.message}</p>}
 
             {loading ? (
-                <div className="card assinatura-atual" aria-busy="true">
-                    <div className="skeleton skeleton--line" style={{ width: '30%' }} />
-                    <div className="skeleton skeleton--line" style={{ width: '60%', height: 28 }} />
+                <div className="assinaturas__grade" aria-busy="true">
+                    {[0, 1].map((i) => (
+                        <div key={i} className="card plano-opcao" style={{ '--i': i }}>
+                            <div className="skeleton skeleton--line" style={{ width: '50%' }} />
+                            <div className="skeleton skeleton--line" style={{ width: '70%', height: 36 }} />
+                            <div className="skeleton skeleton--line" style={{ width: '100%', height: 44 }} />
+                        </div>
+                    ))}
                 </div>
-            ) : assinatura && (
-                <section className="card assinatura-atual">
-                    <div className="assinatura-atual__info">
-                        <span className="assinatura-atual__rotulo">{t('assinatura.seuPlano')}</span>
-                        <strong className="assinatura-atual__plano">{assinatura.planoId?.nome}</strong>
-                        <span className="assinatura-atual__linha"><LinhaDoStatus assinatura={assinatura} /></span>
-                    </div>
-                    <div className="assinatura-atual__lado">
-                        <span className={`badge badge--${TOM_DO_STATUS[assinatura.status] ?? 'info'}`}>{t(`assinatura.status.${assinatura.status}`)}</span>
-                        {['ativa', 'cancelada', 'inadimplente'].includes(assinatura.status) && (
-                            <span className="assinatura-atual__cobranca">{t(`assinatura.cobranca.${assinatura.cobranca}`)}</span>
-                        )}
-                        {cartaoMpAtivo && (confirmandoCancelar ? (
-                            <span className="excluir-inline" role="group">
-                                <span className="excluir-inline__texto">{t('assinatura.cancelarConfirma')}</span>
-                                <button type="button" className={`btn btn--danger btn--sm${abrindo === 'cancelar' ? ' btn--loading' : ''}`} disabled={!!abrindo} onClick={() => executar('cancelar', async () => { await cancelarCartao(); setConfirmandoCancelar(false); setAbrindo(null) })}>{t('comum.confirmar')}</button>
-                                <button type="button" className="btn btn--ghost btn--sm" disabled={!!abrindo} onClick={() => setConfirmandoCancelar(false)}>{t('comum.voltar')}</button>
-                            </span>
-                        ) : (
-                            <button type="button" className="btn btn--ghost btn--sm" onClick={() => setConfirmandoCancelar(true)} title={t('assinatura.cancelarDica')}>{t('assinatura.cancelar')}</button>
-                        ))}
-                        {assinatura.stripeCustomerId && formas.cartao && (
-                            <button type="button" className={`btn btn--ghost btn--sm${abrindo === 'portal' ? ' btn--loading' : ''}`} disabled={!!abrindo} onClick={() => executar('portal', irParaPortal)} title={t('assinatura.gerenciarDica')}>
-                                <IconeAbrir />
-                                {abrindo === 'portal' ? t('assinatura.abrindo') : t('assinatura.gerenciar')}
-                            </button>
-                        )}
-                    </div>
-                </section>
-            )}
-
-            {!loading && pagos.length === 0 && <p className="alert alert--info">{t('assinatura.nenhumPlano')}</p>}
-
-            {!loading && pagos.length > 0 && (
+            ) : listaDePlanos.length === 0 ? (
+                <p className="alert alert--info">{t('assinatura.nenhumPlano')}</p>
+            ) : (
                 <div className="assinaturas__grade">
-                    {pagos.map((plano, i) => {
-                        const emReais = precoEmReais(plano.precoUSD, formas.cotacaoUSD)
-                        const atual = String(assinatura?.planoId?._id) === String(plano._id) && ['ativa', 'cancelada', 'inadimplente'].includes(assinatura?.status)
-                        // Cartão: Stripe (fora do Brasil, precisa do preço no Stripe) ou Mercado Pago (Brasil). No Mercado Pago,
-                        // quem está no Pix pode passar o plano atual para o cartão (a 1ª cobrança cai quando o Pix vence).
-                        const podeCartao = !temCartaoAtivo && (
-                            (formas.cartao && !!plano.stripePriceId && !pixAtivo)
-                            || (formas.cartaoMercadoPago && !!plano.precoUSD && (!pixAtivo || atual))
-                        )
-                        const podePix = formas.pix && !!plano.precoUSD && !temCartaoAtivo && (!pixAtivo || atual)
+                    {listaDePlanos.map((plano, i) => {
+                        const gratuito = plano.tipo === 'gratis'
+                        const ehAtual = String(assinatura?.planoId?._id) === String(plano._id)
+                        const emReais = brasil ? precoEmReais(plano.precoUSD, formas.cotacaoUSD) : null
+                        const temCartao = formas.cartaoMercadoPago || (formas.cartao && !!plano.stripePriceId)
+                        // Quem paga por Pix pode passar o plano atual para o cartão (a cobrança só começa quando o Pix vence).
+                        const cartaoDesabilitado = !!abrindo || (ativa && !(ativaPorPix && ehAtual && formas.cartaoMercadoPago)) || (status === 'inadimplente' && assinatura?.cobranca === 'stripe')
+                        const pixDesabilitado = !!abrindo || ativaNoCartao || aguardandoCartao || (ativaPorPix && !ehAtual)
+                        const renovando = ativaPorPix && ehAtual
                         return (
-                            <article key={plano._id} className="card plano-opcao" style={{ '--i': i }} data-atual={atual || undefined}>
+                            <article key={plano._id} className="card plano-opcao" data-atual={ehAtual || undefined} data-tipo={plano.tipo} style={{ '--i': i }}>
                                 <header className="plano-opcao__topo">
-                                    <h2 className="plano-opcao__nome">{plano.nome}</h2>
-                                    {atual && <span className="badge badge--success">{t('assinatura.planoAtual')}</span>}
+                                    <h3 className="plano-opcao__nome">{plano.nome}</h3>
+                                    {ehAtual && <span className={`badge badge--${SELO_DO_PLANO_ATUAL[status] ?? 'info'}`}>{t('assinatura.planoAtual')}</span>}
                                 </header>
                                 {plano.descricao && <p className="plano-opcao__descricao">{plano.descricao}</p>}
-                                <p className="plano-opcao__preco">
-                                    <strong>{formatarMoeda(plano.precoUSD, 'USD', idioma)}</strong>
-                                    <span>{t('assinatura.porMes')}</span>
-                                </p>
-                                {(formas.pix || formas.cartaoMercadoPago) && emReais && <p className="plano-opcao__dica">{t('assinatura.emReais', { valor: formatarMoeda(emReais, 'BRL', idioma) })}</p>}
-                                <ul className="plano-opcao__lista">
-                                    {[...limites(plano, t), ...t('assinatura.incluido')].map((item) => (
-                                        <li key={item}><IconeCheck />{item}</li>
-                                    ))}
-                                </ul>
-                                <div className="plano-opcao__acoes">
-                                    {podeCartao && (
-                                        <button type="button" className={`btn btn--primary btn--block${abrindo === plano._id ? ' btn--loading' : ''}`} disabled={!!abrindo} onClick={() => executar(plano._id, () => irParaCheckout(plano._id))}>
-                                            <IconeCartao />
-                                            {abrindo === plano._id ? t('assinatura.abrindo') : pixAtivo ? t('assinatura.passarCartao') : t('assinatura.assinarCartao')}
-                                        </button>
-                                    )}
-                                    {podePix && (
-                                        <button type="button" className={`btn ${podeCartao ? 'btn--ghost' : 'btn--primary'} btn--block`} disabled={!!abrindo} onClick={() => setPixDoPlano(plano)}>
-                                            <IconePix />
-                                            {pixAtivo ? t('assinatura.renovarPix') : t('assinatura.pagarPix')}
-                                        </button>
-                                    )}
+
+                                <div className="plano-opcao__valores">
+                                    <p className="plano-opcao__preco">
+                                        {gratuito ? (
+                                            <>
+                                                <strong>{t('assinatura.pagina.gratis')}</strong>
+                                                <span>{t('assinatura.pagina.porDias', { dias: plano.duracaoDiasTrial ?? 15 })}</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <strong>{formatarMoeda(plano.precoUSD, 'USD', idioma)}</strong>
+                                                <span>{t('assinatura.porMes')}</span>
+                                            </>
+                                        )}
+                                    </p>
+                                    {!gratuito && emReais && <p className="plano-opcao__reais">{t('assinatura.pagina.emReais', { valor: formatarMoeda(emReais, 'BRL', idioma) })}</p>}
                                 </div>
+
+                                <Beneficios plano={plano} gateway={brasil ? 'mercadopago' : 'stripe'} t={t} />
+
+                                {!gratuito && (temCartao || formas.pix) && (
+                                    <div className="plano-opcao__acoes">
+                                        {temCartao && (
+                                            <button type="button" className={`btn ${ehAtual && ativa && !ativaPorPix ? 'btn--ghost' : 'btn--primary'} btn--block plano-opcao__cta${abrindo === plano._id ? ' btn--loading' : ''}`}
+                                                disabled={cartaoDesabilitado} onClick={() => abrirCheckout(plano._id)}>
+                                                <IconeCartao />
+                                                {abrindo === plano._id ? t('assinatura.pagina.redirecionando') : textoDoBotaoCartao(ehAtual)}
+                                            </button>
+                                        )}
+                                        {formas.pix && (
+                                            <button type="button" className={`btn ${renovando ? 'btn--primary' : 'btn--ghost'} btn--block plano-opcao__pix`} disabled={pixDesabilitado} onClick={() => setPix(plano)}>
+                                                <IconePix />
+                                                {renovando ? t('assinatura.renovarPix') : t('assinatura.pagarPix')}
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
                             </article>
                         )
                     })}
                 </div>
             )}
 
-            {!loading && (
-                <section className="card assinatura-pagamentos">
-                    <h2 className="card__titulo">{t('assinatura.pagamentos')}</h2>
-                    {pagamentos.length === 0 ? (
-                        <p className="texto-suave">{t('assinatura.semPagamentos')}</p>
-                    ) : (
-                        <div className="table-wrap">
-                            <table className="table">
-                                <tbody>
-                                    {pagamentos.map((p) => (
-                                        <tr key={p.id}>
-                                            <td className="nowrap">{formatarData(p.aprovadoEm, idioma)}</td>
-                                            <td>{p.plano ?? '—'}</td>
-                                            <td>{t(`assinatura.metodo.${p.metodo}`)}</td>
-                                            <td className="table__num">{formatarMoeda(p.valor, p.moeda, idioma)}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </section>
-            )}
-
-            {pixDoPlano && <PixModal plano={pixDoPlano} cotacao={formas.cotacaoUSD} onPago={aplicarAssinatura} onClose={() => setPixDoPlano(null)} />}
+            {pix && <PixModal plano={pix} cotacao={formas.cotacaoUSD} onPago={aplicarAssinatura} onClose={() => setPix(null)} />}
         </div>
     )
 }

@@ -5,6 +5,25 @@
   width: min(1040px, 100%);
 }
 
+/* Topo: "Minha assinatura" e o histórico de pagamentos lado a lado; no celular, um embaixo do outro. */
+.assinaturas__topo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.assinaturas__topo .assinatura-card {
+  max-width: none;
+}
+
+.assinaturas__secao {
+  margin: 12px 0 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
 .assinaturas__resumo {
   margin: 0;
   padding: 12px 16px;
@@ -21,7 +40,7 @@
 
 .assinaturas__grade {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: 20px;
   align-items: stretch;
 }
@@ -102,6 +121,28 @@
 .plano-opcao__preco span {
   font-size: 0.9rem;
   color: var(--text-muted);
+}
+
+.plano-opcao__descricao {
+  margin: -8px 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.plano-opcao__valores {
+  display: grid;
+  gap: 4px;
+}
+
+.plano-opcao__reais {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.plano-opcao__cta svg {
+  width: 18px;
+  height: 18px;
 }
 
 .plano-opcao__lista {
