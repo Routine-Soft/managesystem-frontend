@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useIdioma } from '@/i18n/useIdioma'
 import BotaoCopiar from '@/components/Copiar/BotaoCopiar'
 import { IconeEscudo } from '@/components/Icones/Icones'
@@ -5,6 +6,9 @@ import { IconeEscudo } from '@/components/Icones/Icones'
 // Passo a passo para instalar o agente, com o comando pronto para copiar.
 export function ComandoInstalacao({ comando, comandoRemocao, aguardando = false }) {
     const { t } = useIdioma()
+    const [acoes, setAcoes] = useState(false)
+    // Com a caixinha marcada, o comando instala também o serviço dos botões de atualizar e reiniciar.
+    const comandoFinal = comando && acoes ? `${comando} --permitir-acoes` : comando
     return (
         <div className="instalacao">
             <ol className="instalacao__passos">
@@ -14,10 +18,15 @@ export function ComandoInstalacao({ comando, comandoRemocao, aguardando = false 
 
             {comando && (
                 <div className="comando">
-                    <pre aria-label={t('servidor.comandoInstalacao')}>{comando}</pre>
+                    <label className="check comando__opcao">
+                        <input type="checkbox" checked={acoes} onChange={(e) => setAcoes(e.target.checked)} />
+                        <span>{t('servidor.instalar.liberarAcoes')}</span>
+                    </label>
+                    {acoes && <p className="texto-pequeno">{t('servidor.instalar.liberarAcoesDica')}</p>}
+                    <pre aria-label={t('servidor.comandoInstalacao')}>{comandoFinal}</pre>
                     <div className="comando__acoes">
                         <span className="texto-pequeno">{t('servidor.instalar.soUmaVez')}</span>
-                        <BotaoCopiar texto={comando} className="btn btn--primary btn--sm" />
+                        <BotaoCopiar texto={comandoFinal} className="btn btn--primary btn--sm" />
                     </div>
                 </div>
             )}

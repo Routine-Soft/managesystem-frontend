@@ -807,3 +807,54 @@ strong[data-tom='danger'], dd[data-tom='danger'] { color: var(--danger); }
   justify-content: space-between;
   gap: 8px;
 }
+
+.servidor-card__convertido {
+  margin-left: 4px;
+  font-weight: 500;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+/* Botões "Instalar atualizações" e "Reiniciar" e a última ação */
+.acoes-servidor {
+  display: grid;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+
+.acoes-servidor__botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.acoes-servidor__ultima {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.acoes-servidor__saida {
+  width: 100%;
+}
+
+.acoes-servidor__saida pre {
+  max-height: 220px;
+  overflow: auto;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 0.72rem;
+  white-space: pre-wrap;
+}
+
+.acoes-servidor__dica {
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.comando__opcao {
+  margin-bottom: 8px;
+}

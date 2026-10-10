@@ -127,7 +127,7 @@ export function ServidorPainel() {
                         <div className="painel-coluna">
                             <CardDominioSsl servidor={s} site={dados.site} agora={agora} />
                             <CardDependencias servidor={s} agora={agora} />
-                            <CardSistema servidor={s} />
+                            <CardSistema servidor={s} agora={agora} onPedido={(texto) => { setAviso({ tipo: 'success', texto }); recarregar() }} />
                             <CardLogs servidor={s} />
                             <CardHistorico eventos={dados.eventos} />
                         </div>

@@ -79,3 +79,10 @@ export function minutosLegiveis(min) {
     const h = Math.floor(min / 60)
     return min % 60 ? `${h}h ${min % 60}min` : `${h}h`
 }
+
+// Valor em outra moeda convertido para a moeda da conta (só para mostrar). null quando não precisa ou não há cotação.
+export function convertido(valor, moeda, moedaPadrao, cotacoes) {
+    if (valor === null || valor === undefined || !moeda || moeda === moedaPadrao) return null
+    const taxa = cotacoes?.[moeda]
+    return Number.isFinite(taxa) ? Number(valor) * taxa : null
+}

@@ -3,10 +3,10 @@ import { useIdioma } from '@/i18n/useIdioma'
 import { formatarBytes, formatarMoeda, formatarRelativo, diasAte, formatarPct } from '@/i18n/formatar'
 import Medidor from '@/components/graficos/Medidor'
 import { IconeCadeado, IconeContainer, IconeEscudo, IconeNuvem } from '@/components/Icones/Icones'
-import { TOM_DO_STATUS, hostDaUrl, pct, resumoDoSistema, tomDoUso, tomDosDias } from '../servidor.utils'
+import { TOM_DO_STATUS, convertido, hostDaUrl, pct, resumoDoSistema, tomDoUso, tomDosDias } from '../servidor.utils'
 
 // Cartão do servidor na visão geral: status, uso de CPU/RAM/disco e o que pede atenção.
-export function ServidorCard({ servidor: s, indice, agora, moedaPadrao = 'BRL' }) {
+export function ServidorCard({ servidor: s, indice, agora, moedaPadrao = 'BRL', cotacoes = null }) {
     const { t, idioma } = useIdioma()
     const ram = pct(s.atual?.ramUsada, s.atual?.ramTotal)
     const disco = pct(s.atual?.discoUsado, s.atual?.discoTotal)
@@ -14,6 +14,11 @@ export function ServidorCard({ servidor: s, indice, agora, moedaPadrao = 'BRL' }
     const seguranca = (s.pendencias?.sistemaSeguranca ?? 0) + (s.pendencias?.dependenciasVulneraveis ?? 0)
     // Sistema em container de outro servidor: RAM e CPU vêm do container (o disco é da máquina, fica no cartão dela).
     const c = s.containerAtual
+    // Valor em outra moeda (euro, dólar...) aparece também convertido para a moeda da conta, pela cotação atual.
+    const emMoedaDaConta = (valor, moeda) => {
+        const v = convertido(valor, moeda, moedaPadrao, cotacoes)
+        return v === null ? null : <small className="servidor-card__convertido"> ≈ {formatarMoeda(v, moedaPadrao, idioma)}</small>
+    }
     // Onde está hospedado (preenchido no cadastro); em container, vale o da máquina se o próprio estiver vazio.
     const provedor = s.custo?.provedor || s.provedorDoHost || null
     const medidas = c
@@ -78,7 +83,7 @@ export function ServidorCard({ servidor: s, indice, agora, moedaPadrao = 'BRL' }
                     <div key={m.cliente} className="servidor-card__mensalidade">
                         <div className="servidor-card__valor">
                             <span>{t('servidor.financeiro.mensalidadeDe', { cliente: m.cliente })}</span>
-                            <strong className="mono">{formatarMoeda(m.total, m.moeda, idioma)}</strong>
+                            <strong className="mono">{formatarMoeda(m.total, m.moeda, idioma)}{emMoedaDaConta(m.total, m.moeda)}</strong>
                         </div>
                         {m.itens.length > 0 && (
                             <ul className="servidor-card__itens">
@@ -90,7 +95,7 @@ export function ServidorCard({ servidor: s, indice, agora, moedaPadrao = 'BRL' }
                 {s.custo?.valor != null && (
                     <div className="servidor-card__valor servidor-card__valor--custo">
                         <span>{s.custo.provedor ? t('servidor.financeiro.seuCustoEm', { provedor: s.custo.provedor }) : t('servidor.financeiro.seuCusto')}</span>
-                        <strong className="mono">{formatarMoeda(s.custo.valor, s.custo.moeda, idioma)}</strong>
+                        <strong className="mono">{formatarMoeda(s.custo.valor, s.custo.moeda, idioma)}{emMoedaDaConta(s.custo.valor, s.custo.moeda)}</strong>
                     </div>
                 )}
             </div>

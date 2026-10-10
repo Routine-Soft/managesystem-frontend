@@ -1,9 +1,55 @@
 import { useState } from 'react'
 import { useIdioma } from '@/i18n/useIdioma'
-import { IconeServidor } from '@/components/Icones/Icones'
-import { formatarMoeda } from '@/i18n/formatar'
+import { IconeAtualizar, IconeServidor } from '@/components/Icones/Icones'
+import { formatarMoeda, formatarRelativo } from '@/i18n/formatar'
+import AcaoServidorModal from '../AcaoServidorModal'
 
-export function CardSistema({ servidor: s }) {
+const TOM_DA_ACAO = { pendente: 'info', enviada: 'info', executando: 'warning', ok: 'success', erro: 'danger', expirada: 'neutro' }
+
+// Botões "Instalar atualizações" e "Reiniciar" (só se o agente foi instalado com --permitir-acoes) e a última ação.
+function AcoesDoServidor({ servidor: s, agora, onPedido }) {
+    const { t, idioma } = useIdioma()
+    const [modal, setModal] = useState(null)
+    const ultima = s.acoes?.[0]
+    const emAndamento = ['pendente', 'enviada', 'executando'].includes(ultima?.status)
+
+    if (!s.agente?.acoesPermitidas) {
+        return <p className="texto-pequeno acoes-servidor__dica">{t('servidor.acoes.semPermissao')}</p>
+    }
+    return (
+        <div className="acoes-servidor">
+            <div className="acoes-servidor__botoes">
+                <button type="button" className="btn btn--primary btn--sm" disabled={emAndamento} onClick={() => setModal('atualizar')}>
+                    <IconeAtualizar />{t('servidor.acoes.atualizar')}
+                </button>
+                <button type="button" className="btn btn--ghost btn--sm" disabled={emAndamento} onClick={() => setModal('reiniciar')}>
+                    {t('servidor.acoes.reiniciar')}
+                </button>
+            </div>
+            {ultima && (
+                <div className="acoes-servidor__ultima">
+                    <span className={`badge badge--${TOM_DA_ACAO[ultima.status] ?? 'neutro'}${emAndamento ? ' badge--live' : ''}`}>{t(`servidor.acoes.status.${ultima.status}`)}</span>
+                    <span className="texto-pequeno">
+                        {t('servidor.acoes.ultima', {
+                            acao: t(`servidor.acoes.${ultima.tipo}`),
+                            quando: formatarRelativo(ultima.concluidaEm ?? ultima.pedidaEm, idioma, agora),
+                            quem: ultima.pedidaPor ? ` · ${ultima.pedidaPor}` : '',
+                        })}
+                    </span>
+                    {ultima.saida && (
+                        <details className="acoes-servidor__saida">
+                            <summary>{t('servidor.acoes.verSaida')}</summary>
+                            <pre>{ultima.saida}</pre>
+                        </details>
+                    )}
+                </div>
+            )}
+            {modal && <AcaoServidorModal servidorId={s._id} tipo={modal} onPedido={onPedido} onClose={() => setModal(null)} />}
+        </div>
+    )
+}
+
+export function CardSistema({ servidor: s, agora, onPedido }) {
     const { t, idioma } = useIdioma()
     const [aberto, setAberto] = useState(false)
     const lista = s.pacotes?.lista ?? []
@@ -32,10 +78,15 @@ export function CardSistema({ servidor: s }) {
                 <>
                     {s.sistema?.so && <p className="texto-pequeno">{s.sistema.so} · kernel {s.sistema.kernel} · {s.sistema.arquitetura}</p>}
                     <ul className="linhas">
+                        {s.sistema?.atualizacoesAutomaticas != null && (
+                            <li><span>{t('servidor.so.automaticas')}</span><strong data-tom={s.sistema.atualizacoesAutomaticas ? 'success' : 'warning'}>{t(s.sistema.atualizacoesAutomaticas ? 'servidor.so.ligadas' : 'servidor.so.desligadas')}</strong></li>
+                        )}
                         <li><span>{t('servidor.so.seguranca')}</span><strong className="mono" data-tom={seguranca.length ? 'danger' : undefined}>{seguranca.length}</strong></li>
                         <li><span>{t('servidor.so.outras')}</span><strong className="mono">{outras.length}</strong></li>
                         <li><span>{t('servidor.so.reinicio')}</span><strong className="mono" data-tom={s.pacotes.reinicioNecessario ? 'warning' : 'success'}>{s.pacotes.reinicioNecessario ? t('comum.sim') : t('comum.nao')}</strong></li>
                     </ul>
+
+                    <AcoesDoServidor servidor={s} agora={agora} onPedido={onPedido} />
 
                     {lista.length > 0 && (
                         <details className="pacotes" open={aberto} onToggle={(e) => setAberto(e.currentTarget.open)}>
