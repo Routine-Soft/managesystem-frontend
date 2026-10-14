@@ -286,7 +286,7 @@ function Rodape() {
                 </nav>
             </div>
             <div className="lp-container lp-rodape__base">
-                <span>© {new Date().getFullYear()} ManageSystem. {t('landing.rodape.direitos')}</span>
+                <span>© {new Date().getFullYear()} ServerFall. {t('landing.rodape.direitos')}</span>
                 <ThemeToggle />
             </div>
         </footer>

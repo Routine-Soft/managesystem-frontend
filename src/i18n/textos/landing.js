@@ -41,7 +41,7 @@ export default {
                 'Descobrir que o site caiu porque o cliente mandou mensagem',
                 'Responder "e aí, como está?" toda semana',
             ],
-            depoisTitulo: 'Com o ManageSystem',
+            depoisTitulo: 'Com o ServerFall',
             depois: [
                 'Domínio, SSL e e-mails com data de vencimento e aviso antes de vencer',
                 'RAM, CPU, disco, tráfego e erros de cada servidor em tempo real',
@@ -119,9 +119,9 @@ export default {
             titulo: 'Dúvidas frequentes',
             itens: [
                 { p: 'O agente é seguro para instalar no servidor?', r: 'Sim. Ele só lê informações (memória, disco, logs, atualizações), roda com o sistema em modo somente leitura, não abre nenhuma porta e não recebe comandos de fora. Dá para remover com um comando.' },
-                { p: 'Funciona se o meu sistema está na Vercel ou outro serviço sem servidor?', r: 'Sim. Sem o agente, o ManageSystem verifica de fora: se está no ar, quedas, lentidão e o certificado SSL. RAM e disco aparecem quando há um servidor com o agente.' },
+                { p: 'Funciona se o meu sistema está na Vercel ou outro serviço sem servidor?', r: 'Sim. Sem o agente, o ServerFall verifica de fora: se está no ar, quedas, lentidão e o certificado SSL. RAM e disco aparecem quando há um servidor com o agente.' },
                 { p: 'Preciso de cartão para testar?', r: 'Não. São 15 dias grátis com tudo liberado. Depois, é só escolher um plano.' },
-                { p: 'Como meu cliente paga a mensalidade?', r: 'Pelo portal do cliente, com Pix ou cartão. O dinheiro vai direto para a sua conta do Mercado Pago (Brasil) ou do Stripe (outros países). O ManageSystem não fica com o dinheiro.' },
+                { p: 'Como meu cliente paga a mensalidade?', r: 'Pelo portal do cliente, com Pix ou cartão. O dinheiro vai direto para a sua conta do Mercado Pago (Brasil) ou do Stripe (outros países). O ServerFall não fica com o dinheiro.' },
                 { p: 'Sou dono de um sistema. Como entro no portal?', r: 'O seu desenvolvedor cadastra você e manda um link para criar a senha. Depois é só entrar em "Portal do cliente" com seu e-mail.' },
                 { p: 'Posso cancelar quando quiser?', r: 'Sim, sem multa. No cartão, o acesso continua até o fim do período já pago.' },
             ],
@@ -180,7 +180,7 @@ export default {
                 'Finding out the site was down because the client sent a message',
                 'Answering "so, how is it going?" every week',
             ],
-            depoisTitulo: 'With ManageSystem',
+            depoisTitulo: 'With ServerFall',
             depois: [
                 'Domain, SSL and e-mail expiry dates, with a reminder before they expire',
                 'RAM, CPU, disk, traffic and errors for every server in real time',
@@ -258,9 +258,9 @@ export default {
             titulo: 'Frequently asked questions',
             itens: [
                 { p: 'Is the agent safe to install on my server?', r: 'Yes. It only reads information (memory, disk, logs, updates), runs with a read-only file system, opens no ports and takes no commands from outside. One command removes it.' },
-                { p: 'Does it work if my system runs on Vercel or another serverless service?', r: 'Yes. Without the agent, ManageSystem checks from outside: uptime, outages, slowness and the SSL certificate. RAM and disk show up when there is a server with the agent.' },
+                { p: 'Does it work if my system runs on Vercel or another serverless service?', r: 'Yes. Without the agent, ServerFall checks from outside: uptime, outages, slowness and the SSL certificate. RAM and disk show up when there is a server with the agent.' },
                 { p: 'Do I need a card to try it?', r: 'No. You get 15 free days with everything included. Then just pick a plan.' },
-                { p: 'How does my client pay the monthly fee?', r: 'In the client portal, by Pix or card. The money goes straight into your Mercado Pago (Brazil) or Stripe (other countries) account. ManageSystem never holds the money.' },
+                { p: 'How does my client pay the monthly fee?', r: 'In the client portal, by Pix or card. The money goes straight into your Mercado Pago (Brazil) or Stripe (other countries) account. ServerFall never holds the money.' },
                 { p: 'I own a system. How do I get into the portal?', r: 'Your developer adds you and sends a link to choose your password. Then just sign in under "Client portal" with your e-mail.' },
                 { p: 'Can I cancel anytime?', r: 'Yes, no fees. On card, access continues until the end of the period already paid.' },
             ],

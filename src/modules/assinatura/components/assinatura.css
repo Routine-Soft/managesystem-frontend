@@ -367,7 +367,7 @@
   justify-content: flex-end;
 }
 
-/* ---------- ManageSystem: histórico de pagamentos ao lado de "Minha assinatura" ---------- */
+/* ---------- ServerFall: histórico de pagamentos ao lado de "Minha assinatura" ---------- */
 
 .assinatura-pagamentos {
   display: grid;

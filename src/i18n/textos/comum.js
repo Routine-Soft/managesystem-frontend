@@ -1,6 +1,6 @@
 export default {
     pt: {
-        app: 'ManageSystem',
+        app: 'ServerFall',
         tipoServidor: 'Servidor',
         tipoDominio: 'Domínio',
         salvar: 'Salvar',
@@ -62,7 +62,7 @@ export default {
         },
     },
     en: {
-        app: 'ManageSystem',
+        app: 'ServerFall',
         tipoServidor: 'Server',
         tipoDominio: 'Domain',
         salvar: 'Save',

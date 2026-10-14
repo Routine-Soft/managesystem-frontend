@@ -4,7 +4,7 @@ import { useIdioma } from '@/i18n/useIdioma'
 import { formatarData } from '@/i18n/formatar'
 import { conectarMercadoPago, conectarStripe, desconectarRecebimento } from '../contratante.api'
 
-// Onde o programador recebe: o dinheiro do cliente cai direto na conta dele, sem passar pelo ManageSystem.
+// Onde o programador recebe: o dinheiro do cliente cai direto na conta dele, sem passar pelo ServerFall.
 function Gateway({ id, titulo, descricao, passos, rotulo, placeholder, conta, onConectar, onDesconectar }) {
     const { t, idioma } = useIdioma()
     const [chave, setChave] = useState('')

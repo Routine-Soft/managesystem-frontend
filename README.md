@@ -1,4 +1,4 @@
-# ManageSystem — frontend
+# ServerFall — frontend
 
 Painel web (React 19 + Vite, CSS puro, HashRouter), bilíngue (pt/en), tema claro/escuro/sistema.
 

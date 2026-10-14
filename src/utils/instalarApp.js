@@ -35,7 +35,7 @@ export function podeInstalar() {
   return !!pedidoDeInstalacao
 }
 
-// Abre a janela do navegador "Instalar ManageSystem?". O pedido só pode ser usado uma vez.
+// Abre a janela do navegador "Instalar ServerFall?". O pedido só pode ser usado uma vez.
 export async function instalarApp() {
   if (!pedidoDeInstalacao) return false
   const pedido = pedidoDeInstalacao

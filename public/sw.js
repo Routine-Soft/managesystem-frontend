@@ -4,7 +4,7 @@
 self.addEventListener('install', () => self.skipWaiting())
 self.addEventListener('activate', (event) => event.waitUntil(self.clients.claim()))
 
-const PAGINA_OFFLINE = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ManageSystem</title></head>
+const PAGINA_OFFLINE = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ServerFall</title></head>
 <body style="margin:0;min-height:100vh;display:grid;place-items:center;font-family:system-ui,sans-serif;background:#f8fafc;color:#0f172a;text-align:center;padding:24px">
 <div><h1 style="font-size:1.3rem">Sem conexão com a internet</h1><p>Confira a internet e tente de novo.<br><small>No internet connection. Check it and try again.</small></p>
 <button onclick="location.reload()" style="padding:10px 20px;border:0;border-radius:12px;background:#4f46e5;color:#fff;font-weight:600;cursor:pointer">Tentar de novo</button></div></body></html>`

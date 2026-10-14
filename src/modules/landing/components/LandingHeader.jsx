@@ -64,7 +64,7 @@ export function LandingHeader() {
     return (
         <header className={`lp-header${rolou ? ' is-rolado' : ''}`}>
             <div className="lp-container lp-header__linha">
-                <Link to="/" className="marca-link" aria-label="ManageSystem"><Marca /></Link>
+                <Link to="/" className="marca-link" aria-label="ServerFall"><Marca /></Link>
 
                 <nav className="lp-nav" aria-label={t('comum.menu.principal')}>
                     {SECOES.map((s) => <button key={s} type="button" className="lp-nav__link" onClick={() => irPara(s)}>{t(`landing.menu.${s}`)}</button>)}

@@ -71,7 +71,7 @@ export default {
         },
         recebimento: {
             titulo: 'Receber pagamentos',
-            explicacao: 'O cliente paga direto na SUA conta. O dinheiro não passa pelo ManageSystem. Clientes do Brasil pagam pelo Mercado Pago; de outros países, pelo Stripe.',
+            explicacao: 'O cliente paga direto na SUA conta. O dinheiro não passa pelo ServerFall. Clientes do Brasil pagam pelo Mercado Pago; de outros países, pelo Stripe.',
             conectado: 'Conectado',
             naoConectado: 'Não conectado',
             desde: 'desde {data}',
@@ -158,7 +158,7 @@ export default {
         },
         recebimento: {
             titulo: 'Get paid',
-            explicacao: 'Clients pay straight into YOUR account. The money never goes through ManageSystem. Clients in Brazil pay with Mercado Pago; other countries, with Stripe.',
+            explicacao: 'Clients pay straight into YOUR account. The money never goes through ServerFall. Clients in Brazil pay with Mercado Pago; other countries, with Stripe.',
             conectado: 'Connected',
             naoConectado: 'Not connected',
             desde: 'since {data}',

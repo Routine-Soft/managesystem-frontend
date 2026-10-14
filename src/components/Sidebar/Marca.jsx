@@ -10,7 +10,7 @@ export function Marca({ empresa }) {
                 </svg>
             </span>
             <span className="marca__textos">
-                <strong>ManageSystem</strong>
+                <strong>ServerFall</strong>
                 {empresa && <span title={empresa}>{empresa}</span>}
             </span>
         </div>
