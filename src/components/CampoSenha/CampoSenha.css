@@ -1,0 +1,42 @@
+.campo-senha {
+  position: relative;
+  width: 100%;
+}
+
+.campo-senha__input {
+  padding-right: 2.9rem;
+}
+
+.campo-senha__olho {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm, 8px);
+  transform: translateY(-50%);
+  transition: color 0.2s, background 0.2s;
+}
+
+.campo-senha__olho:hover,
+.campo-senha__olho[aria-pressed='true'] {
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.campo-senha__olho:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.campo-senha__olho svg {
+  width: 18px;
+  height: 18px;
+}

@@ -5,6 +5,7 @@ import { useIdioma } from '@/i18n/useIdioma'
 import SeletorPais from '@/components/SeletorPais/SeletorPais'
 import { adivinharPais } from '@/i18n/paises'
 import AuthLayout from './AuthLayout'
+import CampoSenha from '@/components/CampoSenha/CampoSenha'
 
 const VAZIO = { nomeCompleto: '', nomeEmpresa: '', email: '', telefone: '', password: '' }
 
@@ -63,7 +64,7 @@ export function Registro() {
                 </div>
                 <div className="field">
                     <label className="field__label" htmlFor="reg-senha">{t('auth.senha')}</label>
-                    <input id="reg-senha" className="input" type="password" autoComplete="new-password" minLength={6} required {...campo('password')} />
+                    <CampoSenha id="reg-senha" className="input" autoComplete="new-password" minLength={6} required {...campo('password')} />
                     <span className="field__hint">{t('auth.senhaDica')}</span>
                 </div>
                 <button type="submit" className={`btn btn--primary btn--block${enviando ? ' btn--loading' : ''}`} disabled={enviando}>

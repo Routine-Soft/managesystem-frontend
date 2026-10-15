@@ -5,6 +5,7 @@ import { sessaoDoPortal } from '@/services/portalClient'
 import AuthLayout from '@/modules/user/components/AuthLayout'
 import { entrar } from '../portal.api'
 import { useEntrarNoPortal } from '../portal.hooks'
+import CampoSenha from '@/components/CampoSenha/CampoSenha'
 
 export function PortalLogin() {
     const { t } = useIdioma()
@@ -42,7 +43,7 @@ export function PortalLogin() {
                 </div>
                 <div className="field">
                     <label className="field__label" htmlFor="pl-senha">{t('auth.senha')}</label>
-                    <input id="pl-senha" className="input" type="password" autoComplete="current-password" value={senha} onChange={(e) => setSenha(e.target.value)} required />
+                    <CampoSenha id="pl-senha" className="input" autoComplete="current-password" value={senha} onChange={(e) => setSenha(e.target.value)} required />
                 </div>
                 <button type="submit" className={`btn btn--primary btn--block${enviando ? ' btn--loading' : ''}`} disabled={enviando}>
                     {enviando ? t('auth.entrando') : t('auth.entrar')}

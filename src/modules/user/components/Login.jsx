@@ -4,6 +4,7 @@ import { useAuthContext } from '@/hooks/useAuthContext'
 import { useIdioma } from '@/i18n/useIdioma'
 import { IconeCheck } from '@/components/Icones/Icones'
 import AuthLayout from './AuthLayout'
+import CampoSenha from '@/components/CampoSenha/CampoSenha'
 
 export function Login() {
     const { login, isAuthenticated } = useAuthContext()
@@ -56,7 +57,7 @@ export function Login() {
                 </div>
                 <div className="field">
                     <label className="field__label" htmlFor="login-senha">{t('auth.senha')}</label>
-                    <input id="login-senha" className="input" type="password" autoComplete="current-password" value={senha} onChange={(e) => setSenha(e.target.value)} required />
+                    <CampoSenha id="login-senha" className="input" autoComplete="current-password" value={senha} onChange={(e) => setSenha(e.target.value)} required />
                 </div>
                 <button type="submit" className={`btn btn--primary btn--block${enviando ? ' btn--loading' : ''}`} disabled={enviando}>
                     {enviando ? t('auth.entrando') : t('auth.entrar')}

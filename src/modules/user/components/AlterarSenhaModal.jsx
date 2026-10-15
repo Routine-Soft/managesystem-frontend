@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Modal from '@/components/Modal/Modal'
 import ModalForm from '@/components/Modal/ModalForm'
 import { useIdioma } from '@/i18n/useIdioma'
+import CampoSenha from '@/components/CampoSenha/CampoSenha'
 
 // Alterar senha (modelo do SoftwareClinic): senha atual, nova e confirmação lado a lado.
 export function AlterarSenhaModal({ erro, onSave, onClose }) {
@@ -17,16 +18,16 @@ export function AlterarSenhaModal({ erro, onSave, onClose }) {
                     onSubmit={() => onSave({ currentPassword: form.atual, newPassword: form.nova })}>
                     <div className="field">
                         <label className="field__label" htmlFor="senha-atual">{t('conta.senhaAtual')}</label>
-                        <input id="senha-atual" className="input" type="password" autoComplete="current-password" required data-autofocus {...campo('atual')} />
+                        <CampoSenha id="senha-atual" className="input" autoComplete="current-password" required data-autofocus {...campo('atual')} />
                     </div>
                     <div className="modal-form__row">
                         <div className="field">
                             <label className="field__label" htmlFor="senha-nova">{t('conta.novaSenha')}</label>
-                            <input id="senha-nova" className="input" type="password" autoComplete="new-password" minLength={6} required {...campo('nova')} />
+                            <CampoSenha id="senha-nova" className="input" autoComplete="new-password" minLength={6} required {...campo('nova')} />
                         </div>
                         <div className="field">
                             <label className="field__label" htmlFor="senha-confirmar">{t('conta.confirmarSenha')}</label>
-                            <input id="senha-confirmar" className="input" type="password" autoComplete="new-password" required aria-invalid={diferentes || undefined} {...campo('confirmar')} />
+                            <CampoSenha id="senha-confirmar" className="input" autoComplete="new-password" required aria-invalid={diferentes || undefined} {...campo('confirmar')} />
                         </div>
                     </div>
                     {diferentes

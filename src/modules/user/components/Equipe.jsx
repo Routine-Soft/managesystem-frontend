@@ -8,6 +8,7 @@ import ExcluirInline from '@/components/ExcluirInline/ExcluirInline'
 import { IconeCadeado, IconeLapis, IconeMais, IconeUsuarios } from '@/components/Icones/Icones'
 import { useEquipe } from '../user.hooks'
 import { atualizarMembro, criarMembro, redefinirSenhaMembro } from '../user.api'
+import CampoSenha from '@/components/CampoSenha/CampoSenha'
 
 function MembroModal({ membro, modo, onSalvo, onClose }) {
     const { t } = useIdioma()
@@ -55,7 +56,7 @@ function MembroModal({ membro, modo, onSalvo, onClose }) {
                     {(modo === 'senha' || !membro) && (
                         <div className="field">
                             <label className="field__label" htmlFor="mb-senha">{modo === 'senha' ? t('conta.novaSenha') : t('conta.senhaInicial')}</label>
-                            <input id="mb-senha" className="input" type="password" autoComplete="new-password" minLength={6} required data-autofocus={modo === 'senha' || undefined} {...campo('password')} />
+                            <CampoSenha id="mb-senha" className="input" autoComplete="new-password" minLength={6} required data-autofocus={modo === 'senha' || undefined} {...campo('password')} />
                             <span className="field__hint">{t('auth.senhaDica')}</span>
                         </div>
                     )}

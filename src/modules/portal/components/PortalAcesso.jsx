@@ -4,6 +4,7 @@ import { useIdioma } from '@/i18n/useIdioma'
 import AuthLayout from '@/modules/user/components/AuthLayout'
 import { criarSenha, dadosDoLink } from '../portal.api'
 import { useEntrarNoPortal } from '../portal.hooks'
+import CampoSenha from '@/components/CampoSenha/CampoSenha'
 
 // Link que o programador mandou: o cliente cria (ou troca) a senha e já entra no portal.
 export function PortalAcesso() {
@@ -81,12 +82,12 @@ export function PortalAcesso() {
                 </div>
                 <div className="field">
                     <label className="field__label" htmlFor="pa-senha">{t('portal.acesso.novaSenha')}</label>
-                    <input id="pa-senha" className="input" type="password" autoComplete="new-password" minLength={6} value={senha} onChange={(e) => setSenha(e.target.value)} required autoFocus />
+                    <CampoSenha id="pa-senha" className="input" autoComplete="new-password" minLength={6} value={senha} onChange={(e) => setSenha(e.target.value)} required autoFocus />
                     <span className="field__hint">{t('auth.senhaDica')}</span>
                 </div>
                 <div className="field">
                     <label className="field__label" htmlFor="pa-conf">{t('portal.acesso.confirmar')}</label>
-                    <input id="pa-conf" className="input" type="password" autoComplete="new-password" value={confirmacao} onChange={(e) => setConfirmacao(e.target.value)} required aria-invalid={diferentes || undefined} />
+                    <CampoSenha id="pa-conf" className="input" autoComplete="new-password" value={confirmacao} onChange={(e) => setConfirmacao(e.target.value)} required aria-invalid={diferentes || undefined} />
                     {diferentes && <span className="field__hint field__hint--erro">{t('portal.acesso.diferentes')}</span>}
                 </div>
                 <button type="submit" className={`btn btn--primary btn--block${enviando ? ' btn--loading' : ''}`} disabled={enviando || diferentes}>

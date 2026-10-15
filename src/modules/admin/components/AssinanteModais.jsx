@@ -7,6 +7,7 @@ import { formatarData, formatarMoeda } from '@/i18n/formatar'
 import { adivinharPais } from '@/i18n/paises'
 import { pagamentosDoCliente } from '../admin.api'
 import { tempoDeCasa } from '../admin.utils'
+import CampoSenha from '@/components/CampoSenha/CampoSenha'
 
 // Modais da tela "Assinantes" do super_admin (modelo: ClinicasADM do SoftwareClinic).
 
@@ -42,7 +43,7 @@ function CamposDoAssinante({ form, setForm, comSenha = false }) {
             {comSenha && (
                 <div className="field">
                     <label className="field__label" htmlFor="as-senha">{t('admin.senhaInicial')}</label>
-                    <input id="as-senha" className="input" type="password" autoComplete="new-password" minLength={6} required {...campo('password')} />
+                    <CampoSenha id="as-senha" className="input" autoComplete="new-password" minLength={6} required {...campo('password')} />
                     <span className="field__hint">{t('auth.senhaDica')}</span>
                 </div>
             )}
@@ -99,11 +100,11 @@ export function RedefinirSenhaModal({ assinante, erro, onSave, onClose }) {
                     <div className="modal-form__row">
                         <div className="field">
                             <label className="field__label" htmlFor="rs-nova">{t('conta.novaSenha')}</label>
-                            <input id="rs-nova" className="input" type="password" autoComplete="new-password" minLength={6} required data-autofocus value={nova} onChange={(e) => setNova(e.target.value)} />
+                            <CampoSenha id="rs-nova" className="input" autoComplete="new-password" minLength={6} required data-autofocus value={nova} onChange={(e) => setNova(e.target.value)} />
                         </div>
                         <div className="field">
                             <label className="field__label" htmlFor="rs-conf">{t('conta.confirmarSenha')}</label>
-                            <input id="rs-conf" className="input" type="password" autoComplete="new-password" required value={confirmar} onChange={(e) => setConfirmar(e.target.value)} />
+                            <CampoSenha id="rs-conf" className="input" autoComplete="new-password" required value={confirmar} onChange={(e) => setConfirmar(e.target.value)} />
                         </div>
                     </div>
                     {diferentes
