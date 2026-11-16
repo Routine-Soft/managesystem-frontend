@@ -2,6 +2,8 @@ export default {
     pt: {
         app: 'ServerFall',
         tipoServidor: 'Servidor',
+        tipoContainer: 'Container',
+        tipoExterno: 'Hospedado fora',
         tipoDominio: 'Domínio',
         salvar: 'Salvar',
         salvando: 'Salvando...',
@@ -66,6 +68,8 @@ export default {
     en: {
         app: 'ServerFall',
         tipoServidor: 'Server',
+        tipoContainer: 'Container',
+        tipoExterno: 'Hosted elsewhere',
         tipoDominio: 'Domain',
         salvar: 'Save',
         salvando: 'Saving...',

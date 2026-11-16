@@ -86,3 +86,26 @@ export function convertido(valor, moeda, moedaPadrao, cotacoes) {
     const taxa = cotacoes?.[moeda]
     return Number.isFinite(taxa) ? Number(valor) * taxa : null
 }
+
+// Separa a visão geral em servidores (máquinas com sistemas em container dentro) e os outros sistemas
+// (servidor próprio sem container ligado, ou hospedado fora). A máquina vira o cabeçalho do grupo.
+export function agruparPorServidor(servidores) {
+    const porId = new Map(servidores.map((s) => [String(s._id), s]))
+    const dentro = new Map()
+    for (const s of servidores) {
+        const hostId = s.container?.servidorId ? String(s.container.servidorId) : null
+        if (!hostId || !porId.has(hostId)) continue
+        if (!dentro.has(hostId)) dentro.set(hostId, [])
+        dentro.get(hostId).push(s)
+    }
+    const grupos = [...dentro].map(([id, sistemas]) => ({ servidor: porId.get(id), sistemas }))
+    const outros = servidores.filter((s) => !dentro.has(String(s._id)) && !(s.container?.servidorId && porId.has(String(s.container.servidorId))))
+    return { grupos, outros }
+}
+
+// O que o cartão é: sistema em container, servidor com agente ou só verificado pelo endereço.
+export function tipoDoCartao(s) {
+    if (s.container?.servidorId) return 'container'
+    if (s.agente?.ultimoContato || !s.url) return 'servidor'
+    return 'externo'
+}

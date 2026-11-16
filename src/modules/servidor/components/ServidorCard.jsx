@@ -3,7 +3,9 @@ import { useIdioma } from '@/i18n/useIdioma'
 import { formatarBytes, formatarMoeda, formatarRelativo, diasAte, formatarPct } from '@/i18n/formatar'
 import Medidor from '@/components/graficos/Medidor'
 import { IconeCadeado, IconeContainer, IconeEscudo, IconeNuvem } from '@/components/Icones/Icones'
-import { TOM_DO_STATUS, convertido, hostDaUrl, pct, resumoDoSistema, tomDoUso, tomDosDias } from '../servidor.utils'
+import { TOM_DO_STATUS, convertido, hostDaUrl, pct, resumoDoSistema, tipoDoCartao, tomDoUso, tomDosDias } from '../servidor.utils'
+
+const TIPO_TEXTO = { container: 'comum.tipoContainer', servidor: 'comum.tipoServidor', externo: 'comum.tipoExterno' }
 
 // Cartão do servidor na visão geral: status, uso de CPU/RAM/disco e o que pede atenção.
 export function ServidorCard({ servidor: s, indice, agora, moedaPadrao = 'BRL', cotacoes = null }) {
@@ -14,6 +16,7 @@ export function ServidorCard({ servidor: s, indice, agora, moedaPadrao = 'BRL', 
     const seguranca = (s.pendencias?.sistemaSeguranca ?? 0) + (s.pendencias?.dependenciasVulneraveis ?? 0)
     // Sistema em container de outro servidor: RAM e CPU vêm do container (o disco é da máquina, fica no cartão dela).
     const c = s.containerAtual
+    const tipo = tipoDoCartao(s)
     // Valor em outra moeda (euro, dólar...) aparece também convertido para a moeda da conta, pela cotação atual.
     const emMoedaDaConta = (valor, moeda) => {
         const v = convertido(valor, moeda, moedaPadrao, cotacoes)
@@ -36,7 +39,10 @@ export function ServidorCard({ servidor: s, indice, agora, moedaPadrao = 'BRL', 
         <Link to={`/servidores/${s._id}`} className="card servidor-card" style={{ '--i': indice }} data-status={s.status}>
             <header className="servidor-card__topo">
                 <div className="servidor-card__nome">
-                    <span className="tipo-card">{t('comum.tipoServidor')}</span>
+                    <span className="tipo-card" data-tipo={tipo}>
+                        {tipo === 'container' && <IconeContainer />}
+                        {t(TIPO_TEXTO[tipo])}
+                    </span>
                     <strong>{s.nome}</strong>
                     <span>{s.url ? hostDaUrl(s.url) : resumoDoSistema(s.sistema, t, formatarBytes, idioma) ?? '—'}</span>
                     {provedor && <span className="servidor-card__provedor" title={t('servidor.form.provedor')}><IconeNuvem />{provedor}</span>}

@@ -19,8 +19,10 @@ export function NovoServidorModal({ onCriado, onClose }) {
         setErro(null)
         try {
             const { data } = await criarServidor({ ...form, limiteLentidaoMs: Number(form.limiteLentidaoMs) || 3000 })
-            setCriado(data)
             onCriado?.(data.servidor)
+            // Em container, o agente da máquina já lê tudo: não há o que instalar, então só fecha.
+            if (form.container?.servidorId) return true
+            setCriado(data)
             return false
         } catch (e) {
             setErro(e)

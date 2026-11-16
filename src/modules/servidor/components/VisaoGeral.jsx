@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useIdioma } from '@/i18n/useIdioma'
-import { formatarData } from '@/i18n/formatar'
+import { formatarBytes, formatarData, formatarMoeda, formatarPct } from '@/i18n/formatar'
 import EmptyState from '@/components/EmptyState/EmptyState'
-import { IconeMais, IconeServidor, IconeSetaDireita } from '@/components/Icones/Icones'
+import Medidor from '@/components/graficos/Medidor'
+import { IconeMais, IconeNuvem, IconeServidor, IconeSetaDireita } from '@/components/Icones/Icones'
 import { useAgora, useResumo } from '../servidor.hooks'
-import { contarPendenciasDeSeguranca, proximosVencimentos, tomDosDias } from '../servidor.utils'
+import { TOM_DO_STATUS, agruparPorServidor, contarPendenciasDeSeguranca, hostDaUrl, pct, proximosVencimentos, resumoDoSistema, tomDoUso, tomDosDias } from '../servidor.utils'
 import NovoServidorModal from './NovoServidorModal'
 import ServidorCard from './ServidorCard'
 import './servidor.css'
@@ -17,6 +18,53 @@ function Kpi({ rotulo, valor, sub, tom, indice }) {
             <strong className="kpi__valor mono">{valor}</strong>
             {sub && <span className="kpi__sub">{sub}</span>}
         </div>
+    )
+}
+
+// A máquina (servidor com o agente) como cabeçalho, com os sistemas que rodam nela em container logo abaixo.
+function GrupoServidor({ servidor: s, sistemas, indice, agora, moedaPadrao, cotacoes }) {
+    const { t, idioma } = useIdioma()
+    const medidas = [
+        { rotulo: 'CPU', valor: s.atual?.cpu },
+        { rotulo: 'RAM', valor: pct(s.atual?.ramUsada, s.atual?.ramTotal) },
+        { rotulo: t('servidor.disco.titulo'), valor: pct(s.atual?.discoUsado, s.atual?.discoTotal) },
+    ]
+    const subtitulo = resumoDoSistema(s.sistema, t, formatarBytes, idioma) ?? (s.url ? hostDaUrl(s.url) : null)
+    return (
+        <section className="card grupo-servidor" style={{ '--i': indice }}>
+            <header className="grupo-servidor__topo">
+                <span className="grupo-servidor__icone" aria-hidden="true"><IconeServidor /></span>
+                <div className="grupo-servidor__nome">
+                    <span className="tipo-card">{t('comum.tipoServidor')}</span>
+                    <strong>{s.nome}</strong>
+                    {subtitulo && <span className="texto-pequeno">{subtitulo}</span>}
+                    <span className="texto-pequeno grupo-servidor__info">
+                        {s.custo?.provedor && <span><IconeNuvem />{s.custo.provedor}</span>}
+                        {s.custo?.valor != null && <span className="mono">{formatarMoeda(s.custo.valor, s.custo.moeda, idioma)}/{t('servidor.grupo.mes')}</span>}
+                        <span>{sistemas.length === 1 ? t('servidor.grupo.umContainer') : t('servidor.grupo.containers', { n: sistemas.length })}</span>
+                    </span>
+                </div>
+                <span className={`badge badge--${TOM_DO_STATUS[s.status]}${s.status === 'online' ? ' badge--live' : ''}`}>{t(`servidor.status.${s.status}`)}</span>
+            </header>
+            {s.status !== 'aguardando' && (
+                <ul className="grupo-servidor__medidas">
+                    {medidas.map((m) => (
+                        <li key={m.rotulo}>
+                            <span>{m.rotulo}</span>
+                            <Medidor pct={m.valor} tom={tomDoUso(m.valor)} rotulo={`${m.rotulo} ${formatarPct(m.valor, idioma)}`} />
+                            <strong className="mono">{formatarPct(m.valor, idioma)}</strong>
+                        </li>
+                    ))}
+                </ul>
+            )}
+            <Link to={`/servidores/${s._id}`} className="btn btn--ghost btn--sm grupo-servidor__ver">
+                {t('servidor.grupo.verServidor')}
+                <IconeSetaDireita />
+            </Link>
+            <div className="servidores-grade grupo-servidor__sistemas">
+                {sistemas.map((x, i) => <ServidorCard key={x._id} servidor={x} indice={i} agora={agora} moedaPadrao={moedaPadrao} cotacoes={cotacoes} />)}
+            </div>
+        </section>
     )
 }
 
@@ -32,6 +80,7 @@ export function VisaoGeral() {
     const vencimentos = proximosVencimentos(servidores, sites)
     const vencendo30 = vencimentos.filter((v) => v.dias <= 30).length
     const seguranca = contarPendenciasDeSeguranca(servidores)
+    const { grupos, outros } = agruparPorServidor(servidores)
 
     return (
         <div className="page">
@@ -78,9 +127,24 @@ export function VisaoGeral() {
                     </EmptyState>
                 </div>
             ) : (
-                <div className="servidores-grade">
-                    {servidores.map((s, i) => <ServidorCard key={s._id} servidor={s} indice={i} agora={agora} moedaPadrao={dados.moedaPadrao} cotacoes={dados.cotacoes} />)}
-                </div>
+                <>
+                    {grupos.map((g, i) => (
+                        <GrupoServidor key={g.servidor._id} servidor={g.servidor} sistemas={g.sistemas} indice={i} agora={agora} moedaPadrao={dados.moedaPadrao} cotacoes={dados.cotacoes} />
+                    ))}
+                    {outros.length > 0 && (
+                        <section className="grupo-outros">
+                            {grupos.length > 0 && (
+                                <header className="grupo-outros__topo">
+                                    <h2 className="bloco__titulo">{t('servidor.grupo.outros')}</h2>
+                                    <p className="texto-pequeno">{t('servidor.grupo.outrosSub')}</p>
+                                </header>
+                            )}
+                            <div className="servidores-grade">
+                                {outros.map((s, i) => <ServidorCard key={s._id} servidor={s} indice={i} agora={agora} moedaPadrao={dados.moedaPadrao} cotacoes={dados.cotacoes} />)}
+                            </div>
+                        </section>
+                    )}
+                </>
             )}
 
             {dados && (
