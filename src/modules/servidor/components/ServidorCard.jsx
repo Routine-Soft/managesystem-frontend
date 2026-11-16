@@ -3,12 +3,14 @@ import { useIdioma } from '@/i18n/useIdioma'
 import { formatarBytes, formatarMoeda, formatarRelativo, diasAte, formatarPct } from '@/i18n/formatar'
 import Medidor from '@/components/graficos/Medidor'
 import { IconeCadeado, IconeContainer, IconeEscudo, IconeNuvem } from '@/components/Icones/Icones'
-import { TOM_DO_STATUS, convertido, hostDaUrl, pct, resumoDoSistema, tipoDoCartao, tomDoUso, tomDosDias } from '../servidor.utils'
+import { TOM_DO_STATUS, convertido, detalheEmBytes, detalheEmNucleos, numeroDeNucleos, hostDaUrl, pct, resumoDoSistema, tipoDoCartao, tomDoUso, tomDosDias } from '../servidor.utils'
+
+import DetalheUso from './DetalheUso'
 
 const TIPO_TEXTO = { container: 'comum.tipoContainer', servidor: 'comum.tipoServidor', externo: 'comum.tipoExterno' }
 
 // Cartão do servidor na visão geral: status, uso de CPU/RAM/disco e o que pede atenção.
-export function ServidorCard({ servidor: s, indice, agora, moedaPadrao = 'BRL', cotacoes = null }) {
+export function ServidorCard({ servidor: s, nucleosDaMaquina = null, indice, agora, moedaPadrao = 'BRL', cotacoes = null }) {
     const { t, idioma } = useIdioma()
     const ram = pct(s.atual?.ramUsada, s.atual?.ramTotal)
     const disco = pct(s.atual?.discoUsado, s.atual?.discoTotal)
@@ -24,15 +26,20 @@ export function ServidorCard({ servidor: s, indice, agora, moedaPadrao = 'BRL', 
     }
     // Onde está hospedado (preenchido no cadastro); em container, vale o da máquina se o próprio estiver vazio.
     const provedor = s.custo?.provedor || s.provedorDoHost || null
+    // Usado / livre / total de cada barra. CPU em núcleos: no container, 100% = 1 núcleo da máquina.
+    const gb = (v) => formatarBytes(v, idioma, 1)
+    const nucleos = (n) => numeroDeNucleos(n, idioma)
+    const totalNucleos = (n) => t('servidor.grupo.nucleos', { n: numeroDeNucleos(n, idioma) })
+    const cpus = s.sistema?.cpus
     const medidas = c
         ? [
-            { rotulo: 'CPU', valor: c.cpu },
-            { rotulo: 'RAM', valor: pct(c.ramUsada, c.ramLimite), usada: c.ramUsada, total: c.ramLimite },
+            { rotulo: 'CPU', valor: c.cpu, detalhe: c.cpu != null ? detalheEmNucleos(c.cpu / 100, nucleosDaMaquina, nucleos, totalNucleos) : null },
+            { rotulo: 'RAM', valor: pct(c.ramUsada, c.ramLimite), detalhe: detalheEmBytes(c.ramUsada, c.ramLimite, gb) },
         ]
         : [
-            { rotulo: 'CPU', valor: s.atual?.cpu },
-            { rotulo: 'RAM', valor: ram, usada: s.atual?.ramUsada, total: s.atual?.ramTotal },
-            { rotulo: t('servidor.disco.titulo'), valor: disco },
+            { rotulo: 'CPU', valor: s.atual?.cpu, detalhe: cpus && s.atual?.cpu != null ? detalheEmNucleos((s.atual.cpu / 100) * cpus, cpus, nucleos, totalNucleos) : null },
+            { rotulo: 'RAM', valor: ram, detalhe: detalheEmBytes(s.atual?.ramUsada, s.atual?.ramTotal, gb) },
+            { rotulo: t('servidor.disco.titulo'), valor: disco, detalhe: detalheEmBytes(s.atual?.discoUsado, s.atual?.discoTotal, gb) },
         ]
 
     return (
@@ -52,18 +59,15 @@ export function ServidorCard({ servidor: s, indice, agora, moedaPadrao = 'BRL', 
 
             {s.status === 'aguardando' ? (
                 <p className="servidor-card__aguardando">{t('servidor.instalar.aguardando')}</p>
-            ) : (
+            ) : tipo !== 'externo' && (
+                // Hospedado fora (Vercel...) não tem agente: não há CPU, RAM nem disco para mostrar.
                 <ul className="servidor-card__medidas">
                     {medidas.map((m) => (
                         <li key={m.rotulo}>
                             <span>{m.rotulo}</span>
                             <Medidor pct={m.valor} tom={tomDoUso(m.valor)} rotulo={`${m.rotulo} ${formatarPct(m.valor, idioma)}`} />
                             <strong className="mono">{formatarPct(m.valor, idioma)}</strong>
-                            {m.total ? (
-                                <small className="servidor-card__detalhe mono">
-                                    {t('servidor.containers.memoria', { usada: formatarBytes(m.usada, idioma, 0), limite: formatarBytes(m.total, idioma, 0) })}
-                                </small>
-                            ) : null}
+                            <DetalheUso detalhe={m.detalhe} />
                         </li>
                     ))}
                 </ul>
@@ -88,7 +92,10 @@ export function ServidorCard({ servidor: s, indice, agora, moedaPadrao = 'BRL', 
                 ) : s.mensalidades.map((m) => (
                     <div key={m.cliente} className="servidor-card__mensalidade">
                         <div className="servidor-card__valor">
-                            <span>{t('servidor.financeiro.mensalidadeDe', { cliente: m.cliente })}</span>
+                            <span className="servidor-card__rotulo-mensalidade">
+                                {t('servidor.financeiro.mensalidade')}
+                                <small>{m.cliente}</small>
+                            </span>
                             <strong className="mono">{formatarMoeda(m.total, m.moeda, idioma)}{emMoedaDaConta(m.total, m.moeda)}</strong>
                         </div>
                         {m.itens.length > 0 && (

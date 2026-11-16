@@ -60,7 +60,7 @@
   display: grid;
   gap: 16px;
   align-content: start;
-  padding: 18px;
+  padding: 20px;
   color: inherit;
   text-decoration: none;
   animation: fadeInUp 0.5s var(--ease) backwards;
@@ -729,14 +729,6 @@ strong[data-tom='danger'], dd[data-tom='danger'] { color: var(--danger); }
   color: var(--primary);
 }
 
-/* Uso em MB embaixo da barra da RAM (a porcentagem continua do lado) */
-.servidor-card__detalhe {
-  grid-column: 2 / -1;
-  margin-top: -6px;
-  font-size: 0.74rem;
-  color: var(--text-subtle, var(--text-muted));
-}
-
 /* Onde está hospedado (AWS, OVHcloud, Hostinger...) */
 .servidor-card__nome .servidor-card__provedor {
   display: flex;
@@ -784,7 +776,22 @@ strong[data-tom='danger'], dd[data-tom='danger'] { color: var(--danger); }
 
 .servidor-card__valor strong {
   flex: none;
+  max-width: 100%;
   color: var(--success);
+}
+
+.servidor-card__valor .servidor-card__rotulo-mensalidade {
+  display: grid;
+  gap: 1px;
+  white-space: normal;
+}
+
+.servidor-card__rotulo-mensalidade small {
+  overflow: hidden;
+  font-size: 0.74rem;
+  color: var(--text-subtle, var(--text-muted));
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .servidor-card__valor--custo strong {
@@ -1084,4 +1091,36 @@ strong[data-tom='danger'], dd[data-tom='danger'] { color: var(--danger); }
   .grupo-servidor__medidas {
     grid-template-columns: 1fr;
   }
+}
+
+/* Usado / livre / total embaixo de cada barra (servidor e cartões). */
+.uso-detalhe {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 4px 0 2px;
+}
+
+.uso-detalhe div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px 10px;
+  line-height: 1.35;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+}
+
+.uso-detalhe dt {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.uso-detalhe dd {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text);
+  overflow-wrap: anywhere;
 }

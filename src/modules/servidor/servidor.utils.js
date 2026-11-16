@@ -109,3 +109,24 @@ export function tipoDoCartao(s) {
     if (s.agente?.ultimoContato || !s.url) return 'servidor'
     return 'externo'
 }
+
+// Usado / livre / total de memória ou disco, já formatados. Sem total, não há o que discriminar.
+export function detalheEmBytes(usado, total, formatar) {
+    if (!total || usado == null) return null
+    return { usado: formatar(usado), livre: formatar(Math.max(total - usado, 0)), total: formatar(total) }
+}
+
+// O mesmo para CPU, em núcleos (100% = 1 núcleo inteiro em uso). Sem o total de núcleos, mostra só o usado.
+// A unidade ("núcleos") vai só no total, para caber nas caixinhas.
+export function detalheEmNucleos(usado, total, formatar, formatarTotal = formatar) {
+    if (usado == null) return null
+    if (!total) return { usado: formatarTotal(usado) }
+    return { usado: formatar(usado), livre: formatar(Math.max(total - usado, 0)), total: formatarTotal(total) }
+}
+
+// Núcleos com casas só quando precisa: 2 · 1,9 · 0,05 · < 0,01.
+export function numeroDeNucleos(n, idioma) {
+    const casas = (v, d) => v.toLocaleString(idioma === 'en' ? 'en-US' : 'pt-BR', { maximumFractionDigits: d })
+    if (n > 0 && n < 0.01) return `< ${casas(0.01, 2)}`
+    return casas(n, n < 0.1 ? 2 : 1)
+}

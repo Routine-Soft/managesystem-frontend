@@ -6,7 +6,8 @@ import EmptyState from '@/components/EmptyState/EmptyState'
 import Medidor from '@/components/graficos/Medidor'
 import { IconeMais, IconeNuvem, IconeServidor, IconeSetaDireita } from '@/components/Icones/Icones'
 import { useAgora, useResumo } from '../servidor.hooks'
-import { TOM_DO_STATUS, agruparPorServidor, contarPendenciasDeSeguranca, hostDaUrl, pct, proximosVencimentos, resumoDoSistema, tomDoUso, tomDosDias } from '../servidor.utils'
+import { TOM_DO_STATUS, agruparPorServidor, contarPendenciasDeSeguranca, detalheEmBytes, detalheEmNucleos, numeroDeNucleos, hostDaUrl, pct, proximosVencimentos, resumoDoSistema, tomDoUso, tomDosDias } from '../servidor.utils'
+import DetalheUso from './DetalheUso'
 import NovoServidorModal from './NovoServidorModal'
 import ServidorCard from './ServidorCard'
 import './servidor.css'
@@ -24,10 +25,15 @@ function Kpi({ rotulo, valor, sub, tom, indice }) {
 // A máquina (servidor com o agente) como cabeçalho, com os sistemas que rodam nela em container logo abaixo.
 function GrupoServidor({ servidor: s, sistemas, indice, agora, moedaPadrao, cotacoes }) {
     const { t, idioma } = useIdioma()
+    const a = s.atual ?? {}
+    const gb = (v) => formatarBytes(v, idioma, 1)
+    const cpus = s.sistema?.cpus
+    const nucleos = (n) => numeroDeNucleos(n, idioma)
+    const totalNucleos = (n) => t('servidor.grupo.nucleos', { n: numeroDeNucleos(n, idioma) })
     const medidas = [
-        { rotulo: 'CPU', valor: s.atual?.cpu },
-        { rotulo: 'RAM', valor: pct(s.atual?.ramUsada, s.atual?.ramTotal) },
-        { rotulo: t('servidor.disco.titulo'), valor: pct(s.atual?.discoUsado, s.atual?.discoTotal) },
+        { rotulo: 'CPU', valor: a.cpu, detalhe: cpus && a.cpu != null ? detalheEmNucleos((a.cpu / 100) * cpus, cpus, nucleos, totalNucleos) : null },
+        { rotulo: 'RAM', valor: pct(a.ramUsada, a.ramTotal), detalhe: detalheEmBytes(a.ramUsada, a.ramTotal, gb) },
+        { rotulo: t('servidor.disco.titulo'), valor: pct(a.discoUsado, a.discoTotal), detalhe: detalheEmBytes(a.discoUsado, a.discoTotal, gb) },
     ]
     const subtitulo = resumoDoSistema(s.sistema, t, formatarBytes, idioma) ?? (s.url ? hostDaUrl(s.url) : null)
     return (
@@ -53,6 +59,7 @@ function GrupoServidor({ servidor: s, sistemas, indice, agora, moedaPadrao, cota
                             <span>{m.rotulo}</span>
                             <Medidor pct={m.valor} tom={tomDoUso(m.valor)} rotulo={`${m.rotulo} ${formatarPct(m.valor, idioma)}`} />
                             <strong className="mono">{formatarPct(m.valor, idioma)}</strong>
+                            <DetalheUso detalhe={m.detalhe} />
                         </li>
                     ))}
                 </ul>
@@ -62,7 +69,7 @@ function GrupoServidor({ servidor: s, sistemas, indice, agora, moedaPadrao, cota
                 <IconeSetaDireita />
             </Link>
             <div className="servidores-grade grupo-servidor__sistemas">
-                {sistemas.map((x, i) => <ServidorCard key={x._id} servidor={x} indice={i} agora={agora} moedaPadrao={moedaPadrao} cotacoes={cotacoes} />)}
+                {sistemas.map((x, i) => <ServidorCard key={x._id} servidor={x} nucleosDaMaquina={cpus} indice={i} agora={agora} moedaPadrao={moedaPadrao} cotacoes={cotacoes} />)}
             </div>
         </section>
     )
